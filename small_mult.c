@@ -26,9 +26,7 @@ int main()
                                 break;
                         } 
 
-                        if(i == 20){
-                                value = a;
-                        }
+                        value = (i == 20) ? a : value;
                 }
                 
                 /* Checks if we found it */

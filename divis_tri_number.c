@@ -21,9 +21,8 @@ int main()
         register long int last = 3;
 
         /* Beware infinite loop */
-        for(long int i = 3;; i++){
-
-                last += i;
+        for(long int i = 3; ; last += i, i++){
+                
                 if (numdivis(last) > MAX){
                         break;
                 }
@@ -41,6 +40,6 @@ int numdivis(long f)
                 count += (f % i == 0) ? 1 : 0;
         }
 
-        return 2*count;
+        return 2 * count;
 
 }

@@ -23,7 +23,7 @@ int main()
         /* Beware infinite loop */
         for(long int i = 3;; i++){
 
-                last = last + i;
+                last += i;
                 if (numdivis(last) > MAX){
                         break;
                 }
@@ -38,9 +38,7 @@ int numdivis(long f)
         register int i;
 
         for(i = 1; i*i < f; i++){
-                if (f % i == 0){
-                        count++;
-                }
+                count += (f % i == 0) ? 1 : 0;
         }
 
         return 2*count;

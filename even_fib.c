@@ -39,10 +39,9 @@ int main()
         unsigned int sum = 0;
 
         /* Iterate over all Fibonacci nums in range */
-        for(int i = 0; i < MAX_LEN; i++){
-                if (fiblist[i] % 2 == 0){
-                        sum += fiblist[i]; 
-                }
+        for(int i = 0; ; i++){
+
+                sum += (fiblist[i] % 2 == 0) ? fiblist[i]: 0;
 
                 /* Break if next i is end of list */
                 if (fiblist[i+1] == '\0'){

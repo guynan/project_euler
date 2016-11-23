@@ -1,7 +1,15 @@
+/* Evaluate the sum of all the amicable 
+ * numbers under 10,000. 
+ * Project Euler: 21
+ * Answer: 31626 */
+
+/* Includes */
 #include <stdio.h>
 
+/* Definitions */
 #define MAX     10000
 
+/* Protoypes */
 int main();
 int is_amicable(int n);
 
@@ -20,6 +28,7 @@ int main()
 }
 
 
+/* Returns whether n is amicable */
 int is_amicable(int n)
 {
         int sum = 0; int a;

@@ -25,9 +25,5 @@ int main()
 
 int check(int i)
 {
-        int check;
-
-        check = (i % 3 == 0 || i % 5 == 0) ? 1 : 0;
-
-        return check;
+        return (i % 3 == 0 || i % 5 == 0);
 }

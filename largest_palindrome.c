@@ -1,14 +1,15 @@
 /* A palindromic number reads the same both ways.
  * The largest palindrome made from the product
- * of two 2-digit numbers is 9009 = 91 × 99.
+ * of two 2-digit numbers is 9009 = 91 x 99.
  *
  * Find the largest palindrome made from
  * the product of two 3-digit numbers.
  * Project Euler: 4 */
 
+/* Pretty messy code and doesn't work for 
+ * other data sets */
+
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #define MAX     999
 
@@ -32,6 +33,7 @@ int main()
                         }
                 }
         }
+        printf("%d\n\n", is_palindrome(1221));
 
         printf("%d\n", longest);
 
@@ -50,6 +52,7 @@ int is_palindrome(int i)
 
         length--;
 
+        /* Creates array reverse of i */
         for(int a = 0; length >= 0; length--, a++){
                 check[length] = strcpy[a];
         }
@@ -68,7 +71,7 @@ int is_palindrome(int i)
 /* lol will return 6 always */
 int len(int i)
 {
-        int a = 0; char strcpy[6];
+        int a = 0; char strcpy[64];
         
         sprintf(strcpy, "%d", i);
         for(; strcpy[a] != '\0'; a++);

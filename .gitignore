@@ -31,3 +31,6 @@
 # Debug files
 *.dSYM/
 *.su
+
+# Ignore binaries
+main

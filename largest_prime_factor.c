@@ -6,6 +6,7 @@
 
 /* Includes */
 #include <stdio.h>
+#include <math.h>
 
 /* Definitions */
 long MAX = 600851475143;
@@ -32,9 +33,10 @@ int isprime(int s)
 {
         /* False */
         int isprime = 0; 
+        int top = (int) sqrt(s);
 
-        for(int i = 2; i < s+1; i++){
-                if(i == s){
+        for(int i = 2; i < top +1; i++){
+                if(i == top){
 
                         /* True */
                         isprime = 1; 

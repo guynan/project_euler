@@ -5,6 +5,7 @@
 
 /* Includes */
 #include <stdio.h>
+#include <math.h>
 
 /* Definitions */
 #define MAX 10001
@@ -28,15 +29,24 @@ int main()
         printf("%d\n", last);
 
 }
-       
-       
-/* Detects whether int is prime */
+
+
+/* This is the bottleneck. Takes ages */
 int isprime(int s)
 {
         int isprime = 0; /* False */
+        int top = (int) round(sqrt(s))+1;
 
-        for(int i = 2; i < s+1; i++){
-                if(i == s){
+        if (s == 1){
+                return 0;
+        }
+
+        if (s == 2){
+                return 1;
+        }
+
+        for(int i = 2; i < top +1 ; i++){
+                if(i == top){
                         isprime = 1; /* True */
                         break; 
                 }
@@ -48,4 +58,3 @@ int isprime(int s)
 
         return isprime;
 }
-                

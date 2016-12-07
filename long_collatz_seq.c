@@ -44,11 +44,5 @@ int main()
  * on whether it is even or not */
 long get_n(long n)
 {
-        if (n % 2 == 0){
-                n = n / 2;  
-        } else {
-                n = (3 * n) + 1;
-        }
-
-        return n;
+        return (n % 2 == 0) ? n/2 : (3 * n) + 1;
 }

@@ -25,18 +25,22 @@ int main()
 {
         /* So we can set our mpz_t to 1 */
         unsigned long int one = 1;
-        
 
-        mpz_init(term); mpz_init(first); mpz_init(second); 
+        mpz_init(first); mpz_init(second); mpz_init(term);
+          
         /* Set these to one */
         mpz_set_ui(first, one); mpz_set_ui(second, one);
-        int i = 3;
 
-        for( ; ; i++){
+        /* Index is 3 as we set first & second to 1 */
+        int index = 3;
 
+        for( ; ; index++){
+
+                /* term = first + second */
                 mpz_add(term, first, second);
 
-                /* Set first = second */
+                /* Set first = second 
+                 * and second = term*/
                 mpz_set(first, second);
                 mpz_set(second, term);
 
@@ -46,8 +50,7 @@ int main()
 
         }
 
-        gmp_printf("%Zd\n\n", term);
-        printf("%d\n", i);
+        printf("%d\n", index);
 
         return 0;
 

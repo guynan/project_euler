@@ -16,14 +16,13 @@ void append(int i);
 int main()
 {
 
-        for(int i = 1; indexc < DMAX; i++){
+        for(int i = 0; indexc < DMAX; i++){
                 append(i);
         }
         
         int product = 1;
 
         for(int i = 1; i < DMAX; i *= 10){
-//                printf("%d\n", champconst[i]);
                 product *= champconst[i];
         }
 
@@ -50,7 +49,6 @@ void append(int i){
 int ctoint(char c)
 {
         int x =  (int) c - 48;
-        printf("%d\n", x);
         return x;
 }
 

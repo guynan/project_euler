@@ -2,7 +2,7 @@
  * Find the last ten digits
  * of the sum of this series
  *
- * Answer:
+ * Answer: 9110846700 
  * Project Euler: 48 */
 
 

@@ -78,7 +78,7 @@ int is_digit_factorial(long long i)
 
 int len(long long i)
 {
-        char strcpy[32]; int c = 0;
+        char strcpy[32]; int c = 0; char *p = strcpy;
 
         sprintf(strcpy, "%lli", i);
 

@@ -33,8 +33,6 @@ int main()
                         }
                 }
         }
-        printf("%d\n\n", is_palindrome(1221));
-
         printf("%d\n", longest);
 
         return 0;

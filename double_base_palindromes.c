@@ -7,8 +7,6 @@
  *
  * Project Euler: 36 */
 
-/* Pretty messy code and doesn't work for 
- * other data sets */
 
 #include <stdio.h>
 
@@ -18,10 +16,12 @@
 int main();
 int is_palindrome(int i);
 int len(int i);
+int binconv(int num);
 
 int main()
 {
 
+        printf("%d\n", binconv(32));
         return 0;
 
 }
@@ -63,3 +63,13 @@ int len(int i)
         return a;
 }
 
+int binconv(int num)
+{
+        char string[32];
+        sprintf(string, "%d", num);
+
+        if (num / 2 != 0) {
+                binconv(num / 2); 
+        }
+        return num % 2; 
+}

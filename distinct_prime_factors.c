@@ -7,11 +7,20 @@
 #include <stdio.h>
 
 /* Definitions */
-#define MAX     1000
+#define MAX     10000
 
 /* Prototypes */
 int main();
 
 int main()
 {
+        int consec = 1;
+
+        for(int i = 0; i < MAX; consec = 1, i++){
+                if(has_distinct(i)){
+                        consec++;
+                }
+
+                if(consec == 4){
+                        break;
 

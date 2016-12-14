@@ -3,35 +3,39 @@
  * pentagonal. What is the value of their
  * difference?
 
+ * Answer: 5482660
  * Project Euler: 44 */
 
 #include <stdio.h>
 
-/* Should be less than 1000 */
-#define MAX     10
-#define LEN     300
+/* Should be less than 10000 */
+#define MAX     3000
 
-int pentagons[500];
+long long pentagons[MAX];
 
 /* Prototypes */
 int main();
 void initPentagons();
-int isPentagonal(int n);
+int isPentagonal(long long n);
 
 int main()
 {
-        int difference = 0;
+        int difference; register long long k, j;
 
+        /* k = 2167, j = 1020 */
         initPentagons();
 
-        for(int a = 0; a < MAX; a++){
-                for(int b = 0; b < MAX; b++){
-                        a = pentagons[a];
-                        b = pentagons[b];
+        for(int a = 5; a < MAX; a++){
+                for(int b = 5; b < MAX; b++){
+                                
+                        if(a == b){
+                                break;
+                        }
 
-                        if(isPentagonal(a + b) && isPentagonal(a - b)){
-                                difference = a - b ;
-                                printf("%d\n", difference);
+                        k = pentagons[a]; j = pentagons[b];
+
+                        if(isPentagonal(k + j) && isPentagonal(k - j)){
+                                difference = k - j ;
                                 break;
                         }
                 }
@@ -50,26 +54,21 @@ int main()
  * pentagonal numbers */
 void initPentagons()
 {
-        long l = 0;
-
-        for(int n = 0; pentagons[n] != '\0'; n++){
-                printf("got here m8 %d\n", n);
-                l = n * (3*n - 1)/2;
-                pentagons[n] = l;
+        for(int n = 0; n < MAX; n++){
+                pentagons[n] = (n * (3*n - 1))/2;
         }
 
 }
 
-int isPentagonal(int n)
+int isPentagonal(long long n)
 {
-
         
-        for(int i = 0; pentagons[i] != '\0'; i++){
+        for(int i = 0; i < MAX; i++){
                 if(n == pentagons[i]){
                         return 1;
                 }
 
-                if(n > pentagons[i]){
+                if(n < pentagons[i]){
                         return 0;
                 }
 

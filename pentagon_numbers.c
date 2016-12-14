@@ -16,13 +16,12 @@ long long pentagons[MAX];
 /* Prototypes */
 int main();
 void initPentagons();
-int isPentagonal(long long n);
+int isPentagonal(long n);
 
 int main()
 {
-        int difference; register long long k, j;
+        int difference; register long k, j;
 
-        /* k = 2167, j = 1020 */
         initPentagons();
 
         for(int a = 5; a < MAX; a++){
@@ -60,7 +59,9 @@ void initPentagons()
 
 }
 
-int isPentagonal(long long n)
+/* Asks if is pentagonal by
+ * iterating over the pentagon array */
+int isPentagonal(long n)
 {
         
         for(int i = 0; i < MAX; i++){

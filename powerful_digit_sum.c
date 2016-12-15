@@ -15,4 +15,30 @@
 #include <math.h>
 #include <gmp.h>
 
+#define MAX     100
+register mpz_t digit;
 
+int main()
+
+int main()
+{
+        /* I get a feeling of comfort
+         * that the number will be easily
+         * truncatable and comparable to 
+         * the rest so I don't need to allocate
+         * the whole kitchen sink in terms of 
+         * memory. */
+
+        mpu_init(digit);
+
+        unsigned long int a = 0;
+        unsigned long int b = 0
+
+        for(; a <= MAX; a++){
+                for(; b <= MAX; b++){
+
+
+
+        return 0;
+
+}

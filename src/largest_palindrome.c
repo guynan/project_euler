@@ -4,6 +4,8 @@
  *
  * Find the largest palindrome made from
  * the product of two 3-digit numbers.
+ *
+ * Answer: 906609
  * Project Euler: 4 */
 
 /* Pretty messy code and doesn't work for 

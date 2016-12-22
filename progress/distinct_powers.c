@@ -18,7 +18,7 @@ char powers[MAXLEN];
 
 /* Prototypes */
 long len(unsigned long int list[]);
-append(mpz_t i, int count);
+void append(mpz_t i, int count);
 int inlist(mpz_t i);
 void bubble_sort(long list[], long n);
 int main();
@@ -76,6 +76,8 @@ int main()
 /* Check if i in array */
 int inlist(mpz_t i)
 {
+        mpz_t compare;
+        mpz_init(compare);
 	/* Removed sorting until the
          * rest works 
 
@@ -89,8 +91,8 @@ int inlist(mpz_t i)
 
         for(long int a = 0; powers[a] != '\0'; a++){
                 /* Check if in list */
-                if (powers[a] == i){
-                        printf("%d\n", powers[a]);
+                mpz_set_str(compare, powers[a], 10);
+                if (compare == i){
                         return 1;
                 }
 
@@ -136,10 +138,10 @@ void bubble_sort(long list[], long n)
         }
 }
 
-void append(mpz_t i, int count){
+void append(mpz_t i, int count)
 {
         /* Something along these lines */
-        char string[1024];
-        mpz_get_str(i, string);
+        char * string[1024];
+        mpz_get_str(string, 10, i);
         powers[count] = string;
 }

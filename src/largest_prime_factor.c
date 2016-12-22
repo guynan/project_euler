@@ -18,10 +18,9 @@ int isprime(int x);
 int main()
 {
         long largest; 
+
         for(long i = 1; i * i < MAX; i++){
-                if (MAX % i == 0 && isprime(i)){
-                        largest = i;
-                }
+                largest = (MAX % i == 0 && isprime(i)) ? i : largest;
         }
 
         printf("%li\n", largest);

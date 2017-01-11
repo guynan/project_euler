@@ -16,7 +16,7 @@
 #include <gmp.h>
 
 #define MAX     100
-register mpz_t digit;
+register mpz_t digit; // Probably won't fit in cpu register
 
 int main()
 

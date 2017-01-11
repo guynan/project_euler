@@ -11,7 +11,8 @@ written as the sum of a prime and twice a square.
 
 It turns out that the conjecture was false.
 
-What is the smallest odd composite that cannot be written as the sum of a prime
+What is the smallest odd composite that cannot be 
+written as the sum of a prime
 and twice a square?
 
 Project Euler: 46
@@ -22,11 +23,22 @@ Project Euler: 46
 
 /* Prototypes */
 int main();
+int obeysGoldbach(long i);
 
 int main()
 {
 
+        for(long i = 0; ; i++){
+                if(!obeysGoldbach(i)){
+                        break;                
+                }
+
+        }
+
         return 0;
 }
 
-
+int obeysGoldbach(long i)
+{
+        return 0;
+}

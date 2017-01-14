@@ -9,27 +9,34 @@
 
  * Project Euler: 35 */
 
+
 /* Includes */
 #include <stdio.h>
 #include <math.h>
+
 
 /* Definitions */
 #define MAX     1000000
 int primes[80000]; // I counted them
 int res[500];
 
+
 /* Prototypes */
 int main();
 int isPrime(unsigned int s);
 int stringcomp(char this[], char that[]);
+char * oneRotation(char string[]);
+int strtoint(char string[]);
 void strprint(char string[]);
 void initPrimes();
-int len(char c[]);
+int len(char string[]);
+
 
 int main()
 {
         initPrimes();
 
+        /*
         for(int i = 0; i < MAX; i++){
                 circulate(i);
         }
@@ -39,14 +46,15 @@ int main()
         for(c = 0; res[c] != '\0'; c++);
 
         printf("%d\n", c);
+        */
 
         return 0;
         
 }        
 
 
-
-/* This is the bottleneck. Takes ages */
+/* Checks if an integer is a prime
+ * in the most efficient way I know */
 int isPrime(unsigned int s)
 {
         if (s == 0 || s == 1){
@@ -86,30 +94,6 @@ void initPrimes()
         }
 }
 
-void circulate(int i)
-{
-        char n[10];
-        char f[10];
-
-        /* Create n as a an array of 
-         * characters */
-        sprintf(n, "%d", i);
-
-        /* While n != f */
-        for(int l = 0; !stringcomp(n,f); l++){
-                if(l + 1 > len(f)){
-                        l = 0;
-                }
-
-                f[l] = n[l + 1];
-        }
-}
-
-
-
-        
-
-}
         
 /* This checks to see if `i` is
  * in the list of generated primes */
@@ -129,7 +113,7 @@ int inPrimes(int i)
 }
 
 
-/*
+/* Compares two strings */
 int stringcomp(char this[], char that[])
 {
         for(int i = 0; this[i] != '\0'; i++){
@@ -140,57 +124,72 @@ int stringcomp(char this[], char that[])
 
         return 1;
 }
-*/
 
-int len(char c[])
+/* Length of a string array */
+int len(char string[])
 {
         int i;
 
-        for(c = 0; c[i] != '\0'; c++);
+        for(i = 0; string[i] != '\0'; i++);
 
-        return c;
+        return i;
 }
 
 
+/* Honestly no idea what I am doing */
 void circulate(int i)
 {
         char strcp[10];
-        char f[10];
-        char tmp[10];
+
+        char *strptr;
 
         /* Create n as a an array of
          * characters */
         sprintf(strcp, "%d", i);
-
-        /* Copy the string into `tmp` */
-        for(int i = 0; strcp[i] != '\0'; tmp[i] = strcp[i], i++);
-
-        strprint(tmp);
-
-
+        
         /* While n != f */
-        for(int l = 0; !stringcomp(strcp ,f); l++){
+        for(int a = 0; i != rotated; a++){
+                strptr = oneRotation(strptr);
 
-                for(int c = l; tmp[c] != '\0'; c++){
-
-                        if(f[c + 1] == '\0'){
-                                f[0] = tmp[c];
-                        }
-
-                        f[c] = tmp[c - 1];
-                }
-
-//                strprint(tmp);
-
-                for(int i = 0; tmp[i] != '\0'; tmp[i] = f[i], i++);
-
-                printf("\n");
         }
 }
 
+/* Print a string */
 void strprint(char string[])
 {
-
         for(int m = 0; string[m] != '\0'; printf("%c", string[m]), m++);
 }
 
+
+/* @param: This takes a string
+ * as an argument and returns an array of 
+ * the rotated value */
+char * oneRotation(char string[])
+{
+
+        static char res[5];
+
+        for(int c = 0; string[c] != '\0'; c++){
+
+                if(res[c + 1] == '\0'){
+                        res[0] = string[c];
+                }
+
+                res[c] = string[c - 1];
+        }
+
+        return res;
+}
+
+
+/* Convert a string to a decimal integer */
+int strtoint(char string[])
+{
+	int dec;
+
+	for(int i = 0; string[i] != '\0'; i++){
+		dec = dec * 10 + (string[i] - '0');
+        }
+
+        return dec;
+}

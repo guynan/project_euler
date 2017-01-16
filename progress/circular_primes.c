@@ -24,18 +24,24 @@ int res[500];
 /* Prototypes */
 int main();
 int isPrime(unsigned int s);
-int stringcomp(char this[], char that[]);
-char * oneRotation(char string[]);
-int strtoint(char string[]);
-void strprint(char string[]);
+int stringcomp(char *this, char *that);
+char * oneRotation(char *string);
+int strtoint(char *string);
+void strprint(char *string);
 void initPrimes();
+void circulate(int i);
 int len(char string[]);
 
 
 int main()
 {
-        initPrimes();
+//        initPrimes();
 
+//        char *strptr;
+ //       char string[34] = "123456";
+
+        int l = 123456;
+        circulate(l);
         /*
         for(int i = 0; i < MAX; i++){
                 circulate(i);
@@ -114,16 +120,17 @@ int inPrimes(int i)
 
 
 /* Compares two strings */
-int stringcomp(char this[], char that[])
+int stringcomp(char *this, char *that)
 {
-        for(int i = 0; this[i] != '\0'; i++){
-                if(this[i] != that[i]){
+        while(*this != '\0'){
+                if(*this++ != *that++){
                         return 0;
                 }
         }
 
         return 1;
 }
+
 
 /* Length of a string array */
 int len(char string[])
@@ -139,43 +146,57 @@ int len(char string[])
 /* Honestly no idea what I am doing */
 void circulate(int i)
 {
-        char strcp[10];
+        int check; char *strptr;
 
-        char *strptr;
+        char strcp[10];char res[10];
 
         /* Create n as a an array of
          * characters */
         sprintf(strcp, "%d", i);
+
+        strptr = oneRotation(strcp);
+        for(int f = 0; *strptr != '\0'; f++){ 
+                res[f] = *strptr++;
+        }
+        strptr = oneRotation(res);
+        strprint(strptr);
+//        strprint(strptr);
         
         /* While n != f */
-        for(int a = 0; i != rotated; a++){
+        /*
+        while(! strcomp(strcp, strptr) && inPrimes(check)){
+                check = strtoint(strptr);
+        for(int l = 0; l < 4; l++){
                 strptr = oneRotation(strptr);
-
+                strprint(strptr);
         }
+        */
+        
 }
 
+
 /* Print a string */
-void strprint(char string[])
+void strprint(char *string)
 {
-        for(int m = 0; string[m] != '\0'; printf("%c", string[m]), m++);
+        for( ; *string != '\0'; printf("%c", *string), string++);
+        printf("\n");
 }
 
 
 /* @param: This takes a string
  * as an argument and returns an array of 
  * the rotated value */
-char * oneRotation(char string[])
+char * oneRotation(char *string)
 {
+        static char res[16];
 
-        static char res[5];
-
-        for(int c = 0; string[c] != '\0'; c++){
+        for(int c = 0; *string != '\0'; string++, c++){
 
                 if(res[c + 1] == '\0'){
-                        res[0] = string[c];
+                        res[0] = *string;
                 }
 
-                res[c] = string[c - 1];
+                res[c] = *(string - 1);
         }
 
         return res;
@@ -183,13 +204,14 @@ char * oneRotation(char string[])
 
 
 /* Convert a string to a decimal integer */
-int strtoint(char string[])
+int strtoint(char *string)
 {
-	int dec;
+        int dec;
 
-	for(int i = 0; string[i] != '\0'; i++){
-		dec = dec * 10 + (string[i] - '0');
+        for(dec = 0; *string != '\0'; ){
+                dec = dec * 10 + (*string++ - '0');
         }
 
         return dec;
 }
+

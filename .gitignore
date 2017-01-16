@@ -33,4 +33,4 @@
 *.su
 
 # Ignore binaries
-main
+main*

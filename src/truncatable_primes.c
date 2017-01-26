@@ -74,17 +74,13 @@ int trueLeft(int prime)
 
         for( ; left > 10; left = truncateLeft(left)){
 
-                if(!inPrimes(left)){
-                        return 0;
-                }
+                if(!inPrimes(left)) return 0;
 
         }
 
         left = truncateLeft(left);
 
-        if(inPrimes(left)){
-                return 1;
-        }
+        if(inPrimes(left)) return 1;
 
         return 0;
 

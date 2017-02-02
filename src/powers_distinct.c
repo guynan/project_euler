@@ -45,7 +45,7 @@ struct node {
 /* Function prototypes */
 int main();
 int isDistinct(mpz_t power, node *head);
-void push(node *head, mpz_t val);
+void push(node *current, mpz_t val);
 
 
 int main()
@@ -102,10 +102,8 @@ int isDistinct(mpz_t power, node *head)
  * the end in the assumption that: 1) It has
  * already been totally iterated over; and 2)
  * All duplicate values have been caught */
-void push(node *head, mpz_t val)
+void push(node *current, mpz_t val)
 {
-	node *current = head;
-
 	/* Now we can add a new variable */
 	current->next = malloc(sizeof(node));
         mpz_init(current->next->value);

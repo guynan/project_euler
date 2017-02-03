@@ -17,42 +17,37 @@
 
 /* Definitions */
 #define MAX     1000000
+//#define MAX     100
 int primes[80000]; // I counted them
-int res[500];
+static int result[60];
+static int resc = 0;
 
 
 /* Prototypes */
 int main();
 int isPrime(unsigned int s);
 int stringcomp(char *this, char *that);
-char * oneRotation(char *string);
+int oneRotation(int i);
 int strtoint(char *string);
+int inPrimes(int i);
 void strprint(char *string);
 void initPrimes();
+int in(int i, int *array);
+void append(int *array);
 void circulate(int i);
-int len(char string[]);
+int len(char *string);
 
 
 int main()
 {
-//        initPrimes();
+        initPrimes();
+//        printf("p[2] %d\n", primes[76]);
 
-//        char *strptr;
- //       char string[34] = "123456";
-
-        int l = 123456;
-        circulate(l);
-        /*
         for(int i = 0; i < MAX; i++){
                 circulate(i);
         }
 
-        int c; 
-
-        for(c = 0; res[c] != '\0'; c++);
-
-        printf("%d\n", c);
-        */
+        printf("%d\n", resc);
 
         return 0;
         
@@ -109,8 +104,8 @@ int inPrimes(int i)
                 if(i == primes[c]){
                         return 1;
                 }
-                
-                if(i > primes[c]){
+
+                if(i < primes[c]){
                         return 0;
                 }
         }
@@ -133,52 +128,78 @@ int stringcomp(char *this, char *that)
 
 
 /* Length of a string array */
-int len(char string[])
+int len(char *string)
 {
         int i;
 
-        for(i = 0; string[i] != '\0'; i++);
+        for(i = 0; *string++ != '\0'; i++);
 
         return i;
 }
 
 
-/* Honestly no idea what I am doing */
+/* A real monty of a function:
+ * We first have a look through all possible 
+ * circular iterations of the integer `i`. 
+ * If they are all prime numbers themselves; 
+ * we chuck them in the `result` array using `append` */
 void circulate(int i)
 {
-        int check; char *strptr;
+        int rotated, count = 0;
+        int circular[16];
+        char strcp[10];
 
-        char strcp[10];char res[10];
+        /* This is so we dont start rotating
+         * one index integers */
+        if(i < 10){
+
+                if(inPrimes(i)){
+                        result[resc++] = i;
+                        return;
+                }
+
+                return;
+        }
 
         /* Create n as a an array of
          * characters */
         sprintf(strcp, "%d", i);
 
-        strptr = oneRotation(strcp);
-        for(int f = 0; *strptr != '\0'; f++){ 
-                res[f] = *strptr++;
+        /* Do one rotation so we can enter the loop */
+        rotated = oneRotation(i);
+
+        if(!inPrimes(i)){
+                return;
         }
-        strptr = oneRotation(res);
-        strprint(strptr);
-//        strprint(strptr);
-        
-        /* While n != f */
-        /*
-        while(! strcomp(strcp, strptr) && inPrimes(check)){
-                check = strtoint(strptr);
-        for(int l = 0; l < 4; l++){
-                strptr = oneRotation(strptr);
-                strprint(strptr);
+
+        else {
+                circular[count++] = i;
         }
-        */
-        
+
+        /* While rotated value != i */
+        while(i != rotated){
+//                printf("%d\n", rotated);
+
+                if(inPrimes(rotated)){
+                        rotated = oneRotation(rotated);
+                        circular[count++] = rotated;
+                }
+
+                else{
+                        return;
+                }
+        }
+
+
+        append(circular);
+
 }
 
 
 /* Print a string */
 void strprint(char *string)
 {
-        for( ; *string != '\0'; printf("%c", *string), string++);
+        for( ; *string != '\0'; printf("%c", *string++));
         printf("\n");
 }
 
@@ -186,20 +207,40 @@ void strprint(char *string)
 /* @param: This takes a string
  * as an argument and returns an array of 
  * the rotated value */
-char * oneRotation(char *string)
+int oneRotation(int i)
 {
-        static char res[16];
+        char string[16]; char res[16];
+        int length; 
+//        char stringarr[16];
+//        char *string = stringarr;
 
-        for(int c = 0; *string != '\0'; string++, c++){
+        sprintf(string, "%d", i);
+        
+        length = len(string);
 
-                if(res[c + 1] == '\0'){
-                        res[0] = *string;
+        for(int c = 1; string[c] != '\0'; c++){
+
+                if(string[c + 1] == '\0'){
+                        res[0] = string[c];
                 }
 
-                res[c] = *(string - 1);
+                res[c] = string[c - 1];
         }
 
-        return res;
+        int reslen = len(res);
+
+        /* This is a dirty fucking hack for the 
+         * fact that when the length of `i` is 
+         * less than 5 it adds all these random 
+         * artifacts to the number */
+         // Still no idea why
+        if(length != reslen){
+                for(int l = length; res[l] != '\0'; l++){
+                        res[l] = '\0';
+                }
+        }
+
+        return strtoint(res);
 }
 
 
@@ -213,5 +254,38 @@ int strtoint(char *string)
         }
 
         return dec;
+}
+
+/* Inserts the items of the array into the `result` array */
+void append(int *array)
+{
+        /* Only need to check if one item is
+         * in the list to know all the circular
+         * primes are indeed in the list */
+        if(in(*array, result)){
+                return;
+        }
+
+        /* Inserts unordered into `result` */
+        for( ; *array != '\0'; ){
+ //               printf("%d\n", *array);
+                if(!in(*array++, result)){
+                        result[resc++] = *array;
+                }
+        }
+
+}
+
+/* Pretty simple search; could make this faster by
+ * appending in order and be able to break earlier */
+int in(int i, int *array)
+{
+        for(; *array != '\0'; ){
+                if(i == *array++){
+                        return 1;
+                }
+        }
+
+        return 0;
 }
 

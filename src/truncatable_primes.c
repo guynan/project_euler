@@ -15,6 +15,7 @@
 
 /* Includes */
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 
@@ -116,15 +117,13 @@ int truncateLeft(int i)
 {
         if(i < 10) return i; 
                 
-        char string[16], copy[16];
+        char *string = malloc(16 * sizeof(char));
 
-        sprintf(string, "%d", i);        
+        sprintf(string, "%d", i);
 
-        for(int c = 0; string[c] != '\0'; c++){
-                copy[c] = string[c + 1];
-        }
+        string += 1;
 
-        return strtoint(copy);
+        return strtoint(string);
 }
 
 
@@ -152,7 +151,7 @@ int strtoint(char *string)
 {
         int dec;
 
-        for(dec = 0; *string != '\0'; ){
+        for(dec = 0; *string; ){
                 dec = dec * 10 + (*string++ - '0');
         }
 

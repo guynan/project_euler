@@ -24,7 +24,7 @@
  * right truncatable Harshad primes less than 10000 is 90619.
 
  * Find the sum of the strong, right truncatable Harshad 
- * primes less than 1014.
+ * primes less than 10^14.
  *
  * Project Euler: 387
  *
@@ -50,8 +50,11 @@ int main();
 
 int main()
 {
+        int trunc; int sum = 0;
 
-        printf("%lli\n", truncateRight(2345));
+        for(long long i = 0; i < START; i++){
+
+                        
         return 0;
 
 }
@@ -68,7 +71,12 @@ int isHarshad(long long s)
         for( ; *strptr; sum += (*strptr++ - '0'))
                 ;
 
-        return (s % sum == 0);
+        /* Checks if it is divisible by the sum of
+         * its digits, and if so, checks that the 
+         * result is a prime to satisfy `strong' */
+        if(s % sum == 0) return (isPrime(s / sum));
+                
+        return 0;
 }
 
 
@@ -101,25 +109,35 @@ int isPrime(long long s)
  * the right of the string and return the int */
 long long truncateRight(long long i)
 {
+        /*
         char *strptr = malloc(16 * sizeof(long long));
 	
         sprintf(strptr, "%lli", i);        
 
-        for( ; *strptr++; );
+        for( ; *strptr++; )
+                ;
 
         *strptr--; 
         *strptr  = '\0';
+        */
 
-        return strtoint(strptr);
+        char string[16]; int c = 0;
+        sprintf(string, "%lli", i);        
+
+        for( ; string[c] != '\0'; c++);
+
+        string[c - 1] = '\0';
+
+        return strtoint(string);
 }
 
 
 /* Convert a string to a decimal integer */
 long long strtoint(char *string)
 {
-        int dec;
+        int dec = 0;
 
-        for(dec = 0; *string != '\0'; ){
+        while(*string){
                 dec = dec * 10 + (*string++ - '0');
         }
 

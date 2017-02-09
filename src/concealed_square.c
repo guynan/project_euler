@@ -10,6 +10,7 @@
 
 /* Includes */
 #include <stdio.h>
+#include <stdlib.h>
 
 /* Definitions */
 #define MAX_LEN 20
@@ -33,15 +34,14 @@ int main()
 
         long long test; long long i;
 
-        for(i = START;; i++){
+        for(i = START; ; i++){
+
                 test = i*i;
 
-                if(test < MIN){
-                        continue;
-                }
-                if(satisfied(test)){
-                        break;
-                }
+                if(test < MIN) continue;
+
+                if(satisfied(test)) break;
+
         }
         
         printf("%lli\n", i);
@@ -52,14 +52,15 @@ int main()
 
 int satisfied(long long i)
 {
-        char intstr[MAX_LEN]; int x;
+        char *intstr = malloc(MAX_LEN * sizeof(int));
+        int x;
 
         sprintf(intstr, "%lli", i);
 
         for(int a = 0; a < MAX_LEN; a += 2){
 
 		/* Manual str to int conversion */
-		x = (intstr[a]) - 48;
+		x = *intstr++ - '0';
 
                 if(x != comparison[a]){
                         return 0;

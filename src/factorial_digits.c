@@ -7,6 +7,7 @@
 
 /* Includes */
 #include <stdio.h>
+#include <stdlib.h>
 
 /* Definitions */
 
@@ -15,9 +16,8 @@
 
 /* Prototypes */
 int main();
-int ctoint(char c);
 long factorial(long f);
-int check_digit_fact(long i);
+int checkDigitFact(long i);
 
 
 int main()
@@ -25,7 +25,7 @@ int main()
         long sum = 0;
 
         for(long i = 5; i < MAX; i++ ){ 
-                sum += (check_digit_fact(i)) ? i : 0;
+                sum += (checkDigitFact(i)) ? i : 0;
         }
 
         printf("%li\n", sum);
@@ -44,26 +44,18 @@ long factorial(long f)
         return factorial;
 }
 
-int check_digit_fact(long i)
+int checkDigitFact(long i)
 {
-        char string[16];
+        char *string = malloc(16 * sizeof(int));
 
         /* Cast num to string */
         sprintf(string, "%li", i);
         
-        int sum = 0; int digit;
+        int sum = 0; 
 
-        for(int c = 0; string[c] != '\0'; c++){
-                digit = ctoint(string[c]);
-                sum += factorial(digit); 
-        }
-        
+        for( ; *string; sum += factorial(*string++ - '0'))
+                ;
+                
         return (sum == i);        
-}
-
-int ctoint(char c)
-{
-        int x = (int) c - 48;
-        return x;
 }
 

@@ -32,14 +32,10 @@ int main()
                                 }
                         }
 
-                        if(product != 0){
-                                break;
-                        }
+                        if(product != 0) break;
                 }
 
-                if(product != 0){
-                        break;
-                }
+                if(product != 0) break;
         }
        
         printf("%d\n", product); 

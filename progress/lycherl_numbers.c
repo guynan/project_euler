@@ -33,24 +33,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <st.h>
 
 
 #define MAX             10000
 #define ITER_MAX        50 
 
 
+int isPalindrome(char *string);
+char * strCopy(char *string);
+int strLength(char *string);
+int stringInt(char *str);
+char *strrev(char *str);
 int lycherl(int i);
 int main();
 
 
 int main()
 {
-        int i = 0; int count = 0;
+        int i = 1; int count = 0;
         
         for( ; i < MAX; i++){
 
-//                if(lycherl(i)) count++;
+                printf("%d\n", i);
+                if(lycherl(i)) count++;
 
         }
 
@@ -63,27 +68,29 @@ int main()
 int lycherl(int i)
 {
           
-        int sum; 
-        int counter = 0;
+        int counter = 0; int sum;
+        char *reverse;
+        char *str = malloc(30 * sizeof(char));
 
-        
+        sprintf(str, "%d", i);
 
-         
+        while(!isPalindrome(str)){
+                reverse = strrev(strCopy(str));
+                sum = stringInt(str) + stringInt(reverse);
 
-char * getPalindrome(int i)
-{
-        char * strptr = malloc(30 * sizeof(char));
+                if(counter > ITER_MAX) return 1;
 
-        /* Cast to a string */
-        sprintf(strptr, "%d", i);
+                sprintf(str, "%d", sum);
 
-        char *reverse = strrev(strCopy(strptr));
+                counter++;
+        }
 
-        return stringInt(strptr) + stringInt(reverse);
-}
+        return 0;
+
+} 
 
 
-int isPalindrome(char *string)
+int isPalindrome(char *s)
 {
 	int l; int i = 0;
 
@@ -101,7 +108,10 @@ int strLength(char *string)
 {
 	int i = 0;
 
-	for( ; *string; i++); return i;
+	for( ; *string; i++)
+                ;
+        
+        return i;
 }
 
 
@@ -116,6 +126,7 @@ char * strCopy(char *string)
 
 }
 
+
 int stringInt(char *str)
 {
         int dec = 0;
@@ -125,3 +136,20 @@ int stringInt(char *str)
         return 0;
 }
                 
+
+
+char *strrev(char *str)
+{
+      char *p1, *p2;
+
+      if (! str || ! *str)
+            return str;
+      for (p1 = str, p2 = str + strLength(str) - 1; p2 > p1; ++p1, --p2)
+      {
+            *p1 ^= *p2;
+            *p2 ^= *p1;
+            *p1 ^= *p2;
+      }
+      return str;
+}
+

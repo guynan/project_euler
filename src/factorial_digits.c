@@ -37,9 +37,8 @@ long factorial(long f)
 {
         long factorial = 1;
 
-        for(long i = 1; i != f+1; i++){
-                factorial *= i;
-        }
+        for(long i = 1; i != f+1; factorial *= i++)
+                ;
 
         return factorial;
 }

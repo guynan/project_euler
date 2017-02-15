@@ -26,15 +26,27 @@
 
 
 #define MAX     28123 
+static int abund[MAX];
+int abundc = 0;
 
 
+int sumAbundant(int i);
 int abundant(int i);
 int main();
 
 
 int main()
 {
-        printf("%d\n", abundant(4));
+        for(int i = 0; i < MAX; i++){
+                if(abundant(i)) abund[abundc++] = i;
+        }
+
+        int sum = 0;
+        for(int i = 1; i < MAX; i++){
+                sum += (sumAbundant(i)) ? i : 0;
+        }
+
+        printf("%d\n", sum);
 
         return 0;
 
@@ -42,14 +54,10 @@ int main()
 }
 
 
-
 int abundant(int i)
 {
         /* Make sure to change 50 */
-        int intarr[50]; 
-//        for(int f = 0; intarr[f]; f++){
- //               intarr[f] = '\0';
-  //      }
+        static int intarr[50]; 
         int index = 0;
         int sum;
 
@@ -57,7 +65,6 @@ int abundant(int i)
 //                if(!i % a)
                 if(i % a == 0){
                         intarr[index++] = a;
-                        printf("a: %d\n", a);
                 }
 
         }
@@ -66,9 +73,30 @@ int abundant(int i)
         ptr = intarr;
         for(sum = 0; *ptr != '\0'; sum += *ptr++){
 
-                printf("*ptr %d\n", *ptr);
         }
                 
         return (sum > i);
 
 }
+
+int sumAbundant(int i)
+{
+        int *ptr = abund; int sum;
+        for( ; *ptr++; ){
+                for(int a = 0; abund[a] != '\0'; a++){
+
+                        sum = *ptr + abund[a];
+
+                        if(sum == i) return 1;
+
+                        if(sum > i) break;
+
+                }
+
+                if(*ptr > i) break;
+        }
+
+        return 0;
+
+}
+

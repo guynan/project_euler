@@ -134,11 +134,12 @@ int truncateRight(int i)
 {
         if(i < 10) return i;
                 
-        char string[16]; int c;
+        int c;
+        char *string = malloc(16 * (sizeof(char)));
 
         sprintf(string, "%d", i);        
 
-        for(c = 0; string[c] != '\0'; c++);
+        for(c = 0; *string++ != '\0'; c++);
 
         string[c - 1] = '\0';
 
@@ -164,10 +165,7 @@ void initPrimes()
         int count = 0;
 
         for(int i = 0; i < MAX; i++){
-                if(isPrime(i)){
-                        primes[count] = i;
-                        count++;
-                }
+                if(isPrime(i)) primes[count++] = i;
         }
 }
 
@@ -176,12 +174,11 @@ void initPrimes()
  * in the list of generated primes */
 int inPrimes(int i)
 {
-        for(int c = 0; primes[c] != '\0'; c++){
+        int *p = primes;
 
-                if(i == primes[c]) return 1;
-                        
-                if(i < primes[c]) return 0;
-                        
+        while(*p){
+                if(i == *p) return 1;
+                if(i < *p++) return 0;
         }
 
         return 0;

@@ -19,7 +19,13 @@
  * Find the sum of all the positive integers 
  * which cannot be written as the sum of two abundant numbers.
  *
- * Project Euler 23 */
+ * Project Euler 23 
+ * Answer: 4179871 */
+
+/* This is really fucking slow - please optimise */
+/* As the numbers which aren't abundant are much 
+ * smaller, try having that as your search space */
+ 
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +33,7 @@
 
 #define MAX     28123 
 static int abund[MAX];
-int abundc = 0;
+static int abundc = 0;
 
 
 int sumAbundant(int i);
@@ -43,7 +49,7 @@ int main()
 
         int sum = 0;
         for(int i = 1; i < MAX; i++){
-                sum += (sumAbundant(i)) ? i : 0;
+                sum += (!sumAbundant(i)) ? i : 0;
         }
 
         printf("%d\n", sum);
@@ -56,25 +62,12 @@ int main()
 
 int abundant(int i)
 {
-        /* Make sure to change 50 */
-        static int intarr[50]; 
-        int index = 0;
-        int sum;
+        int sum = 0;
 
         for(int a = 1; a < i; a++){
-//                if(!i % a)
-                if(i % a == 0){
-                        intarr[index++] = a;
-                }
-
+                if(!(i % a)) sum += a;
         }
 
-        int *ptr = NULL;
-        ptr = intarr;
-        for(sum = 0; *ptr != '\0'; sum += *ptr++){
-
-        }
-                
         return (sum > i);
 
 }
@@ -82,18 +75,21 @@ int abundant(int i)
 int sumAbundant(int i)
 {
         int *ptr = abund; int sum;
-        for( ; *ptr++; ){
+
+        for( ; *ptr; ){
                 for(int a = 0; abund[a] != '\0'; a++){
+
+                        if(abund[a] > i) break;
 
                         sum = *ptr + abund[a];
 
                         if(sum == i) return 1;
-
                         if(sum > i) break;
 
                 }
 
-                if(*ptr > i) break;
+                if(*ptr++ > i) return 0;
+
         }
 
         return 0;

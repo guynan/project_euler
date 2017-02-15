@@ -1,6 +1,13 @@
+/* Champernowne's constant
+
+ * Project Euler: 40
+ * Answer: 210 */
+
+
 /* Includes */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #define MAX     1000 /* << dmax */
 #define DMAX    1000000
@@ -9,7 +16,6 @@ int indexc = 0;
 
 /* Prototypes */
 int main();
-int ctoint(char c);
 void append(int i);
 
 
@@ -35,20 +41,10 @@ int main()
  * counter */
 void append(int i){
 
-        char string[64];
+        char *string = malloc(64 * sizeof(char));
         sprintf(string, "%d", i);
 
-        for(int c = 0; string[c] != '\0'; c++){
-                champconst[indexc] = ctoint(string[c]);
-                indexc++;
+        for( ; *string != '\0'; ){
+                champconst[indexc++] = (*string++ - '0');
         }
 }
-
-
-/* Manual char to int conversion */
-int ctoint(char c)
-{
-        int x =  (int) c - 48;
-        return x;
-}
-

@@ -16,8 +16,8 @@
 
 
 /* Definitions */
-//#define MAX     1000000
-#define MAX     100
+#define MAX     1000000
+//#define MAX     100
 static int primes[80000]; // I counted them
 static int result[60];
 static int resc = 0;
@@ -42,15 +42,19 @@ int main()
 {
         initPrimes();
 
-        int i = 11;
         for(int i = 0; i < MAX; i++){
                 circulate(i);
         }
 
 //        printf("%d\n", resc);
-        int *res = result;
-        for( ; *res; printf("%d\n", *res++));
-
+        int counter = 0;
+        for(int i = 0 ; i < 60; i++){
+                if(result[i] != 0){
+                        printf("%d\n", result[i]);
+                        counter++;
+                }
+        }
+        printf("\ncounter: %d\n", counter);
         return 0;
         
 }        
@@ -60,7 +64,7 @@ int main()
  * in the most efficient way I know */
 int isPrime(unsigned int s)
 {
-        if (s < 1) return 0;
+        if (s <= 1) return 0;
 
         if (s == 2) return 1;
 
@@ -132,7 +136,7 @@ int len(char *string)
 void circulate(int i)
 {
         int rotated, count = 0;
-        int circular[16];
+        static int circular[16];
         char strcp[10];
 
         /* This is so we dont start rotating

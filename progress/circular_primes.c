@@ -16,38 +16,40 @@
 
 
 /* Definitions */
-#define MAX     1000000
-//#define MAX     100
-int primes[80000]; // I counted them
+//#define MAX     1000000
+#define MAX     100
+static int primes[80000]; // I counted them
 static int result[60];
 static int resc = 0;
 
 
 /* Prototypes */
-int main();
-int isPrime(unsigned int s);
 int stringcomp(char *this, char *that);
-int oneRotation(int i);
-int strtoint(char *string);
-int inPrimes(int i);
+int isPrime(unsigned int s);
 void strprint(char *string);
-void initPrimes();
+int strtoint(char *string);
 int in(int i, int *array);
 void append(int *array);
-void circulate(int i);
+int oneRotation(int i);
 int len(char *string);
+void circulate(int i);
+int inPrimes(int i);
+void initPrimes();
+int main();
 
 
 int main()
 {
         initPrimes();
-//        printf("p[2] %d\n", primes[76]);
 
+        int i = 11;
         for(int i = 0; i < MAX; i++){
                 circulate(i);
         }
 
-        printf("%d\n", resc);
+//        printf("%d\n", resc);
+        int *res = result;
+        for( ; *res; printf("%d\n", *res++));
 
         return 0;
         
@@ -58,25 +60,17 @@ int main()
  * in the most efficient way I know */
 int isPrime(unsigned int s)
 {
-        if (s == 0 || s == 1){
-                return 0;
-        }
+        if (s < 1) return 0;
 
-        if (s == 2){
-                return 1;
-        }
+        if (s == 2) return 1;
 
         /* Hopefully preventing rounding errors */
         int top = (int) round(sqrt(s) +1 );
 
         for(int i = 2; i < top+1; i++){
-                if(i == top){
-                        return 1;
-                }
+                if(i == top) return 1;
 
-                if (s % i == 0){
-                        return 0;
-                }
+                if (s % i == 0) return 0;
         }
 
         return 0;
@@ -89,8 +83,7 @@ void initPrimes()
 
         for(int i = 0; i < MAX; i++){
                 if(isPrime(i)){
-                        primes[count] = i;
-                        count++;
+                        primes[count++] = i;
                 }
         }
 }
@@ -101,13 +94,8 @@ void initPrimes()
 int inPrimes(int i)
 {
         for(int c = 0; primes[c] != '\0'; c++){
-                if(i == primes[c]){
-                        return 1;
-                }
-
-                if(i < primes[c]){
-                        return 0;
-                }
+                if(i == primes[c]) return 1;
+                if(i < primes[c]) return 0;
         }
 
         return 0;
@@ -118,12 +106,10 @@ int inPrimes(int i)
 int stringcomp(char *this, char *that)
 {
         while(*this != '\0'){
-                if(*this++ != *that++){
-                        return 0;
-                }
+                if(*this++ != *that++) return 0;
         }
 
-        return 1;
+        return (*that != '\0') ? 0 : 1; 
 }
 
 
@@ -211,8 +197,6 @@ int oneRotation(int i)
 {
         char string[16]; char res[16];
         int length; 
-//        char stringarr[16];
-//        char *string = stringarr;
 
         sprintf(string, "%d", i);
         

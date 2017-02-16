@@ -7,20 +7,25 @@
 #include <stdio.h>
 #include <gmp.h>
 
-#define MAX     1000
+#define MAX             1000
+#define STR_LEN         1000
 
 int main();
 int count(spec_type i);
-spec_type inverse(int i);
+mpf_t inverse(int i);
 
 int main()
 {
         int longest;
 
-        spec_type inverse;
+        mpf_t inv;
 
         for(int i = 2; i <= MAX; i++){
-                inverse = inverse(i);
+
+                /* Skip a couple of low hanging fruit */ 
+                if(!(i % 2 || i % 3 || i % 5)) continue;
+
+                inv = inverse(i);
                 longest = (count(inverse) > longest) ? i : longest;
         }
                        
@@ -29,13 +34,21 @@ int main()
         return 0;
 }
 
-int count(spec_type i)
+int count(mpf_t i)
 {
+        char *strcp = malloc(STRLEN * sizeof(char));
+        char *recip = malloc(STRLEN * sizeof(char));
+
+        /* Don't know if this is the method */
+        gmp_get_str(strcp, 10, i);
+        for( ; *strcp; ){
+
+                        
         return 0;
 }
 
 
-spec_type inverse(int i)
+mpf_t inverse(int i)
 {
         return 0;
 }

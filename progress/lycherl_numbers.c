@@ -50,7 +50,7 @@ int main();
 
 int main()
 {
-        int i = 1; int count = 0;
+        int i = 10; int count = 0;
         
         for( ; i < MAX; i++){
 
@@ -68,7 +68,7 @@ int main()
 int lycherl(int i)
 {
           
-        int counter = 0; int sum;
+        int counter = 0; long long sum;
         char *reverse;
         char *str = malloc(30 * sizeof(char));
 
@@ -78,11 +78,9 @@ int lycherl(int i)
                 reverse = strrev(strCopy(str));
                 sum = stringInt(str) + stringInt(reverse);
 
-                if(counter > ITER_MAX) return 1;
+                if(counter++ > ITER_MAX) return 1;
 
-                sprintf(str, "%d", sum);
-
-                counter++;
+                sprintf(str, "%lli", sum);
         }
 
         return 0;
@@ -92,6 +90,8 @@ int lycherl(int i)
 
 int isPalindrome(char *s)
 {
+        if(!++*s) return 1;
+
 	int l; int i = 0;
 
 	l = strLength(s);
@@ -140,16 +140,18 @@ int stringInt(char *str)
 
 char *strrev(char *str)
 {
-      char *p1, *p2;
+        if(!++*str) return str;
 
-      if (! str || ! *str)
-            return str;
-      for (p1 = str, p2 = str + strLength(str) - 1; p2 > p1; ++p1, --p2)
-      {
-            *p1 ^= *p2;
-            *p2 ^= *p1;
-            *p1 ^= *p2;
-      }
-      return str;
+        char *p1, *p2;
+
+        if (! str || ! *str)
+                return str;
+        for (p1 = str, p2 = str + strLength(str) - 1; p2 > p1; ++p1, --p2){
+                *p1 ^= *p2;
+                *p2 ^= *p1;
+                *p1 ^= *p2;
+        }
+
+        return str;
 }
 

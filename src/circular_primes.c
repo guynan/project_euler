@@ -7,17 +7,20 @@
 
  * How many circular primes are there below one million?
 
- * Project Euler: 35 */
+ * Project Euler: 35 
+ * Answer: 55
+ 
+ * Please when compiling use the `-O2' flag */
 
 
 /* Includes */
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 
 /* Definitions */
 #define MAX     1000000
-//#define MAX     100
 static int primes[80000]; // I counted them
 static int result[60];
 static int resc = 0;
@@ -42,19 +45,23 @@ int main()
 {
         initPrimes();
 
+        /* Speed increase: Use list of primes how
+         * you should for fucks sake. Iterate over list
+         * checking if it is a prime and then append.
+         * Here we check 1 million integers vs. just
+         * ~ 75,000 primes */
         for(int i = 0; i < MAX; i++){
                 circulate(i);
         }
 
-//        printf("%d\n", resc);
         int counter = 0;
         for(int i = 0 ; i < 60; i++){
                 if(result[i] != 0){
-                        printf("%d\n", result[i]);
                         counter++;
                 }
         }
-        printf("\ncounter: %d\n", counter);
+
+        printf("%d\n", counter);
         return 0;
         
 }        
@@ -69,9 +76,9 @@ int isPrime(unsigned int s)
         if (s == 2) return 1;
 
         /* Hopefully preventing rounding errors */
-        int top = (int) round(sqrt(s) +1 );
+        int top = (int) round(sqrt(s) + 1);
 
-        for(int i = 2; i < top+1; i++){
+        for(int i = 2; i < top + 1; i++){
                 if(i == top) return 1;
 
                 if (s % i == 0) return 0;
@@ -97,9 +104,10 @@ void initPrimes()
  * in the list of generated primes */
 int inPrimes(int i)
 {
-        for(int c = 0; primes[c] != '\0'; c++){
-                if(i == primes[c]) return 1;
-                if(i < primes[c]) return 0;
+        int *prime = primes;
+        while(*prime != '\0'){
+                if(i == *prime) return 1;
+                if(i < *prime++) return 0;
         }
 
         return 0;
@@ -136,8 +144,8 @@ int len(char *string)
 void circulate(int i)
 {
         int rotated, count = 0;
-        static int circular[16];
-        char strcp[10];
+        int *circular = malloc(16 * sizeof(int));
+        char *strcp = malloc(16 * sizeof(char));
 
         /* This is so we dont start rotating
          * one index integers */
@@ -145,7 +153,6 @@ void circulate(int i)
 
                 if(inPrimes(i)){
                         result[resc++] = i;
-                        return;
                 }
 
                 return;
@@ -158,28 +165,24 @@ void circulate(int i)
         /* Do one rotation so we can enter the loop */
         rotated = oneRotation(i);
 
+        /* Return if it isn't even a prime */
         if(!inPrimes(i)){
                 return;
         }
 
-        else {
-                circular[count++] = i;
-        }
-
+        else circular[count++] = i;
+                
         /* While rotated value != i */
         while(i != rotated){
-//                printf("%d\n", rotated);
 
                 if(inPrimes(rotated)){
                         rotated = oneRotation(rotated);
                         circular[count++] = rotated;
                 }
 
-                else{
-                        return;
-                }
+                else return;
+                        
         }
-
 
         append(circular);
 
@@ -199,13 +202,11 @@ void strprint(char *string)
  * the rotated value */
 int oneRotation(int i)
 {
-        char string[16]; char res[16];
-        int length; 
+        char *string = malloc(16 * sizeof(char));
+        char *res = malloc(16 * sizeof(char));
 
         sprintf(string, "%d", i);
         
-        length = len(string);
-
         for(int c = 1; string[c] != '\0'; c++){
 
                 if(string[c + 1] == '\0'){
@@ -215,19 +216,6 @@ int oneRotation(int i)
                 res[c] = string[c - 1];
         }
 
-        int reslen = len(res);
-
-        /* This is a dirty fucking hack for the 
-         * fact that when the length of `i` is 
-         * less than 5 it adds all these random 
-         * artifacts to the number */
-         // Still no idea why
-        if(length != reslen){
-                for(int l = length; res[l] != '\0'; l++){
-                        res[l] = '\0';
-                }
-        }
-
         return strtoint(res);
 }
 
@@ -235,11 +223,10 @@ int oneRotation(int i)
 /* Convert a string to a decimal integer */
 int strtoint(char *string)
 {
-        int dec;
+        int dec = 0;
 
-        for(dec = 0; *string != '\0'; ){
-                dec = dec * 10 + (*string++ - '0');
-        }
+        for( ; *string != '\0'; dec = dec * 10 + (*string++ - '0'))
+                ;
 
         return dec;
 }
@@ -254,11 +241,13 @@ void append(int *array)
                 return;
         }
 
+        int value;
+
         /* Inserts unordered into `result` */
-        for( ; *array != '\0'; ){
- //               printf("%d\n", *array);
-                if(!in(*array++, result)){
-                        result[resc++] = *array;
+        while(*array != '\0'){
+                value = *array++;
+                if(!in(value, result)){
+                        result[resc++] = value;
                 }
         }
 
@@ -268,10 +257,8 @@ void append(int *array)
  * appending in order and be able to break earlier */
 int in(int i, int *array)
 {
-        for(; *array != '\0'; ){
-                if(i == *array++){
-                        return 1;
-                }
+        while(*array != '\0'){
+                if(i == *array++) return 1;
         }
 
         return 0;

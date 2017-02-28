@@ -32,17 +32,22 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <inttypes.h>
 #include <math.h>
 
 
-#define MAX             10000
+//#define MAX             10000
+#define MAX             200
+#define LEN             100
 #define ITER_MAX        50 
 
 
 int isPalindrome(char *string);
-char * strCopy(char *string);
+uint64_t stringInt(char *str);
+char *strCopy(char *string);
 int strLength(char *string);
-int stringInt(char *str);
+void strprint(char *str);
 char *strrev(char *str);
 int lycherl(int i);
 int main();
@@ -51,15 +56,16 @@ int main();
 int main()
 {
         int i = 10; int count = 0;
-        
+
         for( ; i < MAX; i++){
-
-                printf("%d\n", i);
                 if(lycherl(i)) count++;
-
         }
 
-        printf("%d\n", MAX - count);
+//        printf("%d\n", lycherl(4994));
+
+        printf("%d\n", count);
+
+        return 0;
 
 
 }
@@ -68,19 +74,30 @@ int main()
 int lycherl(int i)
 {
           
-        int counter = 0; long long sum;
+        uint8_t counter = 0; uint64_t sum;
+        char *str = malloc(LEN * sizeof(char));
         char *reverse;
-        char *str = malloc(30 * sizeof(char));
 
         sprintf(str, "%d", i);
 
-        while(!isPalindrome(str)){
+        if(isPalindrome(str)){
                 reverse = strrev(strCopy(str));
                 sum = stringInt(str) + stringInt(reverse);
+                sprintf(str, "%" PRIu64, sum);
+        }
 
-                if(counter++ > ITER_MAX) return 1;
+        while(!isPalindrome(str)){
+                reverse = strrev(strCopy(str));
+                strprint(reverse);
+                sum = stringInt(str) + stringInt(reverse);
+//                printf("%lli\n", sum);
 
-                sprintf(str, "%lli", sum);
+                if(counter++ > ITER_MAX){
+ //                       printf("%d\n", i);
+                        return 1;
+                }
+
+                sprintf(str, "%" PRIu64, sum);
         }
 
         return 0;
@@ -90,13 +107,11 @@ int lycherl(int i)
 
 int isPalindrome(char *s)
 {
-        if(!++*s) return 1;
+//        if(!++*s) return 1;
 
-	int l; int i = 0;
+	int l = strLength(s);
 
-	l = strLength(s);
-
-	for(i = 0; i < l/2; i++){
+	for(int i = 0; i < l/2; i++){
 		if ( s[i] != s[l-i-1] ) return 0; 
 	}
 
@@ -106,14 +121,13 @@ int isPalindrome(char *s)
 
 int strLength(char *string)
 {
-	int i = 0;
+	uint16_t i = 0;
 
-	for( ; *string; i++)
+	for( ; *string++; i++)
                 ;
         
         return i;
 }
-
 
 
 char * strCopy(char *string)
@@ -127,25 +141,24 @@ char * strCopy(char *string)
 }
 
 
-int stringInt(char *str)
+uint64_t stringInt(char *str)
 {
-        int dec = 0;
+        uint64_t dec = 0;
 
-        for( ; *str; dec = dec + 10 * *str++ - '0');
+        for( ; *str; dec = dec * 10 + (*str++ - '0'))
+                ;
 
-        return 0;
+        return dec;
 }
-                
 
 
 char *strrev(char *str)
 {
-        if(!++*str) return str;
+        if (! str || ! *str) return str;
 
         char *p1, *p2;
-
-        if (! str || ! *str)
-                return str;
+                
+        /* Say what... */
         for (p1 = str, p2 = str + strLength(str) - 1; p2 > p1; ++p1, --p2){
                 *p1 ^= *p2;
                 *p2 ^= *p1;
@@ -155,3 +168,9 @@ char *strrev(char *str)
         return str;
 }
 
+
+void strprint(char *str)
+{
+        for( ; *str; printf("%c", *str++));
+        printf("\n");
+}

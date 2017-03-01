@@ -27,7 +27,9 @@
 
  * How many Lychrel numbers are there below ten-thousand?
 
- * Project Euler: 55 */
+ * Project Euler: 55 
+ *
+ * Answer: 249 */
 
 
 #include <stdio.h>
@@ -37,8 +39,7 @@
 #include <math.h>
 
 
-//#define MAX             10000
-#define MAX             200
+#define MAX             10000
 #define LEN             100
 #define ITER_MAX        50 
 
@@ -55,26 +56,23 @@ int main();
 
 int main()
 {
-        int i = 10; int count = 0;
+        uint16_t count = 0;
 
-        for( ; i < MAX; i++){
-                if(lycherl(i)) count++;
-        }
+        for(uint16_t i = 0; i < MAX; count += lycherl(i++));
 
-//        printf("%d\n", lycherl(4994));
-
-        printf("%d\n", count);
+        printf("%" PRIu16 "\n", count);
 
         return 0;
-
 
 }
 
 
+/* Returns whether the integer is lycherl or not
+ * by checking up to ITER_MAX iterations */
 int lycherl(int i)
 {
           
-        uint8_t counter = 0; uint64_t sum;
+        uint16_t count = 0; uint64_t sum;
         char *str = malloc(LEN * sizeof(char));
         char *reverse;
 
@@ -88,14 +86,9 @@ int lycherl(int i)
 
         while(!isPalindrome(str)){
                 reverse = strrev(strCopy(str));
-                strprint(reverse);
                 sum = stringInt(str) + stringInt(reverse);
-//                printf("%lli\n", sum);
 
-                if(counter++ > ITER_MAX){
- //                       printf("%d\n", i);
-                        return 1;
-                }
+                if(count++ > ITER_MAX) return 1;
 
                 sprintf(str, "%" PRIu64, sum);
         }
@@ -107,8 +100,6 @@ int lycherl(int i)
 
 int isPalindrome(char *s)
 {
-//        if(!++*s) return 1;
-
 	int l = strLength(s);
 
 	for(int i = 0; i < l/2; i++){
@@ -130,11 +121,12 @@ int strLength(char *string)
 }
 
 
+/* Simple string copy */
 char * strCopy(char *string)
 {
-        static char copy[30];
+        char *copy = malloc(30 * sizeof(char));
 
-        for(int i = 0 ; *string; copy[i++] = *string++);
+        for(uint16_t i = 0 ; *string; copy[i++] = *string++);
 
         return copy;
 

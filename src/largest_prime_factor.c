@@ -6,21 +6,22 @@
 
 /* Includes */
 #include <stdio.h>
+#include <stdint.h>
 #include <math.h>
 
 /* Definitions */
-long MAX = 600851475143;
+uint64_t MAX = 600851475143;
 
 /* Prototypes */
 int main();
-int isprime(int x);
+int isPrime(uint32_t s);
 
 int main()
 {
-        long largest; 
+        uint64_t largest; 
 
-        for(long i = 1; i * i < MAX; i++){
-                largest = (MAX % i == 0 && isprime(i)) ? i : largest;
+        for(uint64_t i = 1; i * i < MAX; i++){
+                largest = (MAX % i == 0 && isPrime(i)) ? i : largest;
         }
 
         printf("%li\n", largest);
@@ -28,25 +29,21 @@ int main()
 
 
 /* Detects whether int is prime */
-int isprime(int s)
+int isPrime(uint32_t s)
 {
-        /* False */
-        int isprime = 0; 
-        int top = (int) sqrt(s);
+	if(s < 1) return 0;
 
-        for(int i = 2; i < top +1; i++){
-                if(i == top){
+        uint32_t top = (uint32_t) round(sqrt(s));
 
-                        /* True */
-                        isprime = 1; 
-                        break; 
-                }
+        for(uint32_t i = 2; i < top +1; i++){
 
-                if (s % i == 0){
-                        break;
-                }
+                if(i == top) return 1;
+
+                if (s % i == 0) return 0;
         }
 
-        return isprime;
+        return 0;
+
 }
+
 

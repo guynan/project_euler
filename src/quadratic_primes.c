@@ -1,6 +1,5 @@
 /* Quadratic Primes
  *
- *
  * Project Euler: 27
  *
  * Answer: -59231 */
@@ -12,25 +11,38 @@
 #include <inttypes.h>
 #include <math.h>
 
-/* Definitions */
-#define MAX     1000
 
+/* Definitions */
+#define MAX             1000
+#define MIN             -999
+#define MAX_PRIME       875000
+#define SIZEOF_PRIMES   75000
+
+
+/* Function Protoytpes */
+int consecPrimes(int16_t a, int16_t b, int *primes);
+uint8_t in(int value, int *primes);
+uint8_t isPrime(uint32_t s);
+uint32_t mod(int i);
+int * initPrimes();
 int main();
-int mod(int i);
-int consecPrimes(int a, int b);
-int isPrime(unsigned int s);
 
 
 int main()
 {
+        int16_t a, b, chain;
+
+        /* Saves all the attributes about longest array 
+         * so if you want to find out about it you don't 
+         * need an unwieldly number of extra variables */
         uint32_t *longest = malloc(3 * sizeof(uint32_t));
 
-        int16_t a, b, chain;
-        longest[0] = 0;
+        /* Initialise our list of primes */
+        int *primes = initPrimes();
 
-        for(a = -999; mod(a) < MAX; a++){
-                for(b = -999; mod(b) < MAX; b++){
-                        chain = consecPrimes(a, b);
+        for(a = MIN; mod(a) < MAX; a++){
+                for(b = MIN; mod(b) < MAX; b++){
+                        chain = consecPrimes(a, b, primes);
                         if(chain > *longest){
                                 longest[0] = chain;
                                 longest[1] = a;
@@ -45,15 +57,16 @@ int main()
 }
 
 /* Return modulus of int */
-int mod(int i)
+uint32_t mod(int i)
 {
         return (i < 0) ? -i : i;
 }
 
+
 /* Detects whether int is prime */
-int isPrime(unsigned int s)
+uint8_t isPrime(uint32_t s)
 {
-        if (s == 0 || s == 1) return 0;
+        if (s < 1) return 0;
 
         if (s == 2) return 1;
 
@@ -69,14 +82,17 @@ int isPrime(unsigned int s)
 }
 
 
-int consecPrimes(int a, int b)
+/* Counts how many primes can be generated using 
+ * this sequence of f(a, b). Uses the prime array to 
+ * pass to check if the number we are testing is prime */
+int consecPrimes(int16_t a, int16_t b, int *primes)
 {
         uint32_t count = 0; uint32_t value;
 
         for(int n = 0; ; n++){
                 value = pow(n, 2) + (a * n) + b;
 
-                if(isPrime(value)){
+                if(in(value, primes)){
                         count++;
                 } else {
                         return count;
@@ -87,3 +103,35 @@ int consecPrimes(int a, int b)
         return count;
 
 }
+
+
+/* Initialises a list of primes and returns it */
+int * initPrimes()
+{
+        int *primes = malloc(SIZEOF_PRIMES * sizeof(int));
+
+        for(uint32_t c, i = 0; i < MAX_PRIME; i++){
+
+                if(isPrime(i)){
+                        primes[c++] = i;
+                }
+        }
+
+        return primes;
+}
+
+
+uint8_t in(int value, int *primes)
+{
+
+        while(*primes){
+
+                if(*primes == value) return 1;
+
+                if(*primes++ > value) return 0;
+        }
+
+        return 0;
+
+}
+

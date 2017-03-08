@@ -23,11 +23,15 @@
 
 
 int main();
+int check(uint16_t a, uint16_t b, uint16_t c);
 
 
 int main()
 {
         int *p = malloc(MAX * sizeof(int));
+        for(int i = 0; *p; p[i++] = 0);
+
+        int perimeter;
 
         for(uint16_t a = 1; a < MAX; a++){
                 for(uint16_t b = 1; b < MAX; b++){
@@ -36,10 +40,19 @@ int main()
                                 perimeter = a + b + c;
                                 if(perimeter > 1000) break;
 
-                                count += check(a,b,c);
+                                p[perimeter] += check(a,b,c);
                         }
                 }
         }
+
+        int big;
+
+        for( ; *++p; ){
+                printf("%d\n", *p);
+                big = (*p > big) ? *p : big;
+        }
+
+        printf("%d\n", big);
 
         return 0;
 }
@@ -50,14 +63,5 @@ int check(uint16_t a, uint16_t b, uint16_t c)
         /* Pythagorean rule */
         return (pow(c, 2) == pow(a, 2) + pow(b, 2));
 }
-
-
-
-
-
-
-
-
-
 
 

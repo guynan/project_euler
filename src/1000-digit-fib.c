@@ -4,25 +4,30 @@
  * Project Euler: 25
  * Answer: 4782 */
 
+
 /* Includes */
 #include <stdio.h>
+#include <stdlib.h>
 #include <gmp.h>
+
 
 /* FreeBSD : ln lib from /usr/local/lib to /usr/lib 
  * && ln gmp.h from /usr/local/include to /usr/include */
 
+
 /* Definitions */
 #define MAX 1000
-mpz_t first;
-mpz_t second;
-mpz_t term;
+
 
 /* Prototypes */
 int main();
 int len(mpz_t i);
 
+
 int main()
 {
+        mpz_t first; mpz_t second; mpz_t term;
+        
         /* So we can set our mpz_t to 1 */
         unsigned long int one = 1;
 
@@ -35,7 +40,7 @@ int main()
         int index = 3;
 
         for( ; ; index++){
-
+                
                 /* term = first + second */
                 mpz_add(term, first, second);
 
@@ -43,11 +48,8 @@ int main()
                  * and second = term*/
                 mpz_set(first, second);
                 mpz_set(second, term);
-
-                if (len(term) ==  MAX){
-                        break;
-                }
-
+                
+                if(len(term) ==  MAX) break;
         }
 
         printf("%d\n", index);
@@ -56,15 +58,18 @@ int main()
 
 }
 
+
 int len(mpz_t i)
 {
-        int a = 0; char strngcpy[1001];
+        int a = 0;
+        char *strngcpy = malloc(MAX * sizeof(char));
 
-        /* Have to cast to string to 
-         * get length */
+        /* Cast to string to get length */
         mpz_get_str(strngcpy, 10, i);
 
-        for( ; strngcpy[a] != '\0'; a++);
+        for( ; *strngcpy++ != '\0'; a++)
+                ;
 
         return a;
 }
+

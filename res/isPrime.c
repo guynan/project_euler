@@ -26,7 +26,7 @@ uint8_t isPrime(uint32_t s)
 
                 if(i == top) return 1;
 
-                if(s % i == 0) return 0;
+                if(s % i == 0) break;
         }
 
         return 0;

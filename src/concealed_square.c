@@ -8,9 +8,13 @@
 /* While this is done, it takes about a minute
  * fourty. Develop more efficient algorithm */
 
+
 /* Includes */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <inttypes.h>
+
 
 /* Definitions */
 #define MAX_LEN 20
@@ -20,8 +24,8 @@ int comparison[MAX_LEN];
 
 
 /* Prototypes */
+int satisfied(uint64_t i);
 int main();
-int satisfied(long long i);
 
 int main()
 {
@@ -32,7 +36,7 @@ int main()
                 comparison[i-2] = (i % 2 == 0) ? i/2 : '\0';
         }
 
-        long long test; long long i;
+        uint64_t test; uint64_t i;
 
         for(i = START; ; i++){
 
@@ -44,27 +48,26 @@ int main()
 
         }
         
-        printf("%lli\n", i);
+        printf("%lli\n", (long long) i);
 
 	return 0;
 
 }
 
-int satisfied(long long i)
+
+int satisfied(uint64_t i)
 {
         char *intstr = malloc(MAX_LEN * sizeof(int));
         int x;
 
-        sprintf(intstr, "%lli", i);
+        sprintf(intstr, "%" PRIu64, i);
 
         for(int a = 0; a < MAX_LEN; a += 2){
 
 		/* Manual str to int conversion */
 		x = *intstr++ - '0';
 
-                if(x != comparison[a]){
-                        return 0;
-                }
+                if(x != comparison[a]) return 0;
         }
 
         return 1;

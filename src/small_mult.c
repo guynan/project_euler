@@ -8,35 +8,34 @@
 /* Includes */
 #include <stdio.h>
 
-/* Definitions */
-#define MAX 4000000000 /* Fucking big */
 
 /* Prototypes */
+int isDivisible(long a);
 int main();
+
 
 int main()
 {
-        int value = -1;
+        long int a;
 
-        for(long int a = 1; a < MAX; a++){
+        for(a = 1; !(isDivisible(a)); a++);
 
-                for(int i = 1; i < 21; i++){
-
-                        if (a % i != 0){
-                                break;
-                        } 
-
-                        value = (i == 20) ? a : value;
-                }
-                
-                /* Checks if we found it */
-                if(value != -1){
-                        break;
-                }
-        }
-
-        printf("%d\n", value);
+        printf("%li\n", a);
                                 
         return 0;
+}
+
+int isDivisible(long a)
+{
+
+        for(int i = 1; i <= 20; i++){
+
+                if (a % i != 0) break;
+
+                if (i == 20) return 1;
+        }
+
+        return 0;
+
 }
 

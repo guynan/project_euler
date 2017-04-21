@@ -3,50 +3,50 @@
  * exceed four million. 
  *
  * Project Euler: 2 
- * Answer: 4613736 */
+ * Answer: 4613732 */
+
 
 /* Includes */
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
 
 /* Definitions */
 #define MAX 4000000
 #define MAX_LEN 400 /* MAX_LEN will be << MAX */
 
+
 /* Prototypes */
 int main();
 
+
 int main()
 {
-        int fiblist[MAX_LEN];
-        fiblist[0] = 1; fiblist[1] = 2;
+        int *fiblist = malloc(MAX_LEN * sizeof(int));
+        fiblist[0] = 1; fiblist[1] = 1;
 
-        int first; int second; int ith;
+        int *first = &fiblist[0];
+        int *second = &fiblist[1];
+        int ith;
 
         /* Create array of Fibonacci values < MAX */
-        for(unsigned int i = 2; i < MAX; i++){
-                first = i - 2;
-                second = i - 1;
-                ith = fiblist[first] + fiblist[second];
+        for(int i = 2; i < MAX; i++){
 
-                if (ith > MAX){
-                        break;
-                }
+                ith = *first++ + *second++;
+
+                if (ith > MAX) break;
 
                 fiblist[i] = ith;
-
         }
 
-        unsigned int sum = 0;
-
+        uint32_t sum = 0;
+        
         /* Iterate over all Fibonacci nums in range */
-        for(int i = 0; ; i++){
+        for(int *arr = &fiblist[0]; *arr; arr++){
 
-                sum += (fiblist[i] % 2 == 0) ? fiblist[i]: 0;
+                sum += !(*arr % 2) ? *arr : 0;
 
-                /* Break if next i is end of list */
-                if (fiblist[i+1] == '\0'){
-                        break;
-                }
         }
 
         printf("%d\n", sum);

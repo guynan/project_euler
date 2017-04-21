@@ -3,7 +3,7 @@
  * exceed four million. 
  *
  * Project Euler: 2 
- * Answer: 4613736 */
+ * Answer: 4613732 */
 
 /* Includes */
 #include <stdio.h>
@@ -16,7 +16,7 @@ int main();
 
 int main()
 {
-	int first = 1; int second = 1; int term; int sum = 4;
+	int first = 1; int second = 1; int term; int sum = 0;
 
 	while(1){
 

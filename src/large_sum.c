@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-#define FILE_PATH       "../res/large_sum.txt"
+#define FILE_PATH       "../res/large_sum"
 #define NUM_COUNT       100
 #define LINE_LENGTH     50
 

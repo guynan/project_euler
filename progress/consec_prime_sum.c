@@ -14,124 +14,110 @@
 
  * Project Euler: 50 */
 
+#include <inttypes.h>
+#include <stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <math.h>
 
-//#define START   900000
-#define START   0
-#define MAX     1000
-/*
-#define START   0
-#define MAX     100
-*/
-int primes[80000]; // I counted them
+#define NUM_PRIMES      20000
+//#define MAX             1000000
+#define MAX             100
 
-int main();
-int isPrime(unsigned int s);
-void initPrimes();
-int checkPrime(int n);
+int isIn(uint64_t sum, uint32_t* p);
+int main(int argc, char** argv);
+uint32_t* initPrimes(int max);
+int isPrime(uint32_t s);
 
-int main()
+
+int main(int argc, char** argv)
 {
         /* One assumption I make is that the 
          * longest consecutive sum will start
          * from the first prime number; 2. */
 
-        initPrimes();
+        uint32_t* primes = initPrimes(MAX);
 
-        int sum = 0; int largest; 
-        
-        for(int i = START; i < MAX; i++){
-                sum += primes[i];
-                if(sum > MAX){
-                        printf("%d\n", largest);
-                        break;
-                }
+        uint64_t largest = 0;
+        uint64_t sum;
 
-                if(checkPrime(sum)){
-                        largest = sum;
-                }
 
-        }                
 
-        printf("%d\n", largest);
-
-        /*
-        int i = 0; int largest = 0;
-
-//        Find index of largest prime in range 
-        for(; primes[i] < MAX; i++);
-        
-        int sum = primes[i]; 
-
-        for(int c = 0; c < MAX; c++){
-                sum -= primes[c];
-                if(checkPrime(sum)){
-                        largest = sum;
-                        break;
-                }
-
-        }
-
-        printf("%d\n", largest);
-
-        */
-        return 0;
-}
-
-/* Once we initialise the array, it 
- * is far more efficient to traverse that 
- * when looking for primes */
-int checkPrime(int n)
-{
-        for(int i = 0; primes[i] != '\0'; i++){
-                if(n == primes[i]){
-                        return 1;
-                } 
-
-                if(primes[i] > n){
-                        return 0;
+        /* Naive solution */
+        for(int i = 0; primes[i]; ){
+                
+                outer: sum = 0;
+                i++;
+                for(int j = i; primes[j]; j++){
+                        sum += primes[j];
+                        printf("%"PRIu64"\n", sum);
+                        if(isIn(sum, (primes + j))){
+                                largest = sum;
+                                continue;
+                        }
+                        goto outer;
                 }
         }
+
+
+        printf("%"PRIu64"\n", largest);
 
         return 0;
 }
 
-/* This is the bottleneck. Takes ages */
-int isPrime(unsigned int s)
-{
-        if (s == 0 || s == 1){
-                return 0;
-        }
-
-        if (s == 2){
-                return 1;
-        }
-
-        int top = (int) round(sqrt(s) +1 );
-
-        for(int i = 2; i < top+1; i++){
-                if(i == top){
-                        return 1;
-                }
-
-                if (s % i == 0){
-                        return 0;
-                }
-        }
-
-        return 0;
-}
 
 /* Generate a list of primes up to 1mil */
-void initPrimes()
+uint32_t* initPrimes(int max)
 {
+        int n = NUM_PRIMES;
         int count = 0;
+        uint32_t* p = malloc(n * sizeof(uint32_t));
 
-        for(int i = 0; i < MAX; i++){
+        for(int i = 0; i < max; i++){
+
                 if(isPrime(i)){
-                        primes[count] = i;
+                        p[count] = i;
                         count++;
                 }
+
+                if(count == n){
+                        p = realloc(p, (n *= 2) * sizeof(uint32_t));
+                        puts("realloc");
+                }
+
         }
+
+        return p;
+}
+
+int isPrime(uint32_t s)
+{
+        /* Theoretically shouldn't get values
+         * less than zero due to type safety */
+        if (s < 2) return 0;
+
+        /* Preventing rounding errors */
+        uint32_t top = (uint32_t) round(sqrt(s) + 1);
+
+        for(uint32_t i = 2; i < top + 1; i++){
+
+                if(i == top) return 1;
+
+                if(s % i == 0) break;
+        }
+
+        return 0;
+}
+
+int isIn(uint64_t sum, uint32_t* p)
+{
+        for( ; *p ; p++){
+                if(sum == *p) return 1;
+
+                if(sum > *p) return 0;
+                        
+        }
+
+        return 0;
+
 }

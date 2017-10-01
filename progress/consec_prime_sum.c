@@ -21,8 +21,7 @@
 #include <math.h>
 
 #define NUM_PRIMES      20000
-//#define MAX             1000000
-#define MAX             100
+#define MAX             1000000
 
 int isIn(uint64_t sum, uint32_t* p);
 int main(int argc, char** argv);
@@ -40,22 +39,25 @@ int main(int argc, char** argv)
 
         uint64_t largest = 0;
         uint64_t sum;
+        uint32_t length = 0;
 
 
 
         /* Naive solution */
-        for(int i = 0; primes[i]; ){
+        for(int i = 0; primes[i]; i++){
                 
-                outer: sum = 0;
-                i++;
+                sum = 0;
+
                 for(int j = i; primes[j]; j++){
                         sum += primes[j];
-                        printf("%"PRIu64"\n", sum);
+//                        printf("%"PRIu64"\n", sum);
                         if(isIn(sum, (primes + j))){
-                                largest = sum;
-                                continue;
+                                uint32_t diff = j - i;
+                                if(j - i > length){
+                                        largest = sum;
+                                        length = diff;
+                                }
                         }
-                        goto outer;
                 }
         }
 
@@ -114,7 +116,7 @@ int isIn(uint64_t sum, uint32_t* p)
         for( ; *p ; p++){
                 if(sum == *p) return 1;
 
-                if(sum > *p) return 0;
+                if(sum < *p) return 0;
                         
         }
 

@@ -33,15 +33,29 @@ int isSquare(uint32_t);
 
 int main(int argc, char** argv)
 {
-        (void) argc; (void) argv;
+        (void) argc;
+        (void) argv;
 
         uint32_t* primes = initPrimes(MAX);
+        uint32_t i;
 
-        /* odd composite - 2 * square = prime */
-//        for(uint32_t i = 3; i < MAX; i += 2){
-        
+        for(i = 3; i < MAX; i += 2){
+
+                int found = 1;
+                for(uint32_t j = 0; i >= primes[j]; j++){
+
+                        if(isSquare(i - primes[j])){
+                                found = 0;
+                                break;
+                        } 
+
+                }
+                if(found) goto done;
+        }
+
                 
-        printf("%"PRIu32"\n", findClosestPrime(27, primes));
+        done:
+                printf("%"PRIu32"\n", i);
 
         return 0;
 }
@@ -57,6 +71,7 @@ int isPrime(uint32_t s)
         /* Theoretically shouldn't get values
          * less than zero due to type safety */
         if (s < 2) return 0;
+        if(s == 2) return 1;
 
         /* Preventing rounding errors */
         uint32_t top = (uint32_t) round(sqrt(s) + 1);
@@ -73,9 +88,8 @@ int isPrime(uint32_t s)
 
 int isSquare(uint32_t a)
 {
-        double tmp = sqrt(a);
-
-        return ((int)(tmp * tmp) == a);
+        double tmp = sqrt((double) a / 2);
+        return ((uint32_t) tmp == tmp);
 
 }
 
@@ -97,7 +111,8 @@ uint32_t* initPrimes(uint32_t max)
 
         uint32_t* primes = malloc(MAX * sizeof(uint32_t));
 
-        for(uint32_t i, c = 0; i < max; i++){
+        uint32_t c = 0;
+        for(uint32_t i = 0; i < max; i++){
                 if(isPrime(i)) primes[c++] = i;
         }
 

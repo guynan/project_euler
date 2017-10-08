@@ -21,6 +21,7 @@
  *
  * Answer: */
 
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -29,6 +30,9 @@
 
 
 #define START           21780
+#define START_RATIO     0.9
+#define END_RATIO       0.99
+#define DIGIT_LEN       10
 
 int main(int argc, char** argv);
 int isAscending(char* a);
@@ -37,23 +41,23 @@ int isDescending(char* a);
 
 int main(int argc, char** argv)
 {
-        char* digit = malloc(10 * sizeof(char));
-        int count = 0;
+        char* digit = malloc(DIGIT_LEN * sizeof(char));
 
-                /*
-        for(int i = 100; i < 1000; i++){
+        /* Start with a known proportion and go from there
+         * up until we find the expected ratio */
+        uint32_t count = START * START_RATIO;
 
-                sprintf(digit, "%d", i);
-//                printf("%s\n", digit);
-//                if(isDescending(digit)) printf("%d\n", i);
-                if(!isDescending(digit) && ! isAscending(digit)){
-                        count++;
+        for(uint32_t i = START + 1; ; i++){
+
+                sprintf(digit, "%"PRIu32, i);
+                
+                count += (!isDescending(digit) && ! isAscending(digit));
+
+                if(ceil(i * END_RATIO) == count){
+                        printf("%d\n", i);
+                        break;
                 }
         }
-                */
-
-        printf("%d\n", isDescending("959"));
-//        printf("%d\n", count);
 
         return 0;
 
@@ -62,12 +66,11 @@ int main(int argc, char** argv)
 int isDescending(char* a)
 {
         char last = *a;
-        printf("%c\n", last);
         a++;
 
         while(*a){
-                printf("%d > %d \n", *a, last);
                 if(*a > last) return 0;
+                last = *a;
                 a++;
         }
 
@@ -77,12 +80,12 @@ int isDescending(char* a)
 
 int isAscending(char* a)
 {
-
         char last = *a;
         a++;
 
         while(*a){
                 if(*a < last) return 0;
+                last = *a;
                 a++;
         }
 

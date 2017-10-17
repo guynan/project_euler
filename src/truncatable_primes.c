@@ -16,11 +16,13 @@
 /* Includes */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <math.h>
 
 
 /* Definitions */
-#define MAX 750000
+#define MAX             750000
+#define BASE            10
 static int primes[80000];
 static int res[12];
 static int primesum = 0;
@@ -29,6 +31,7 @@ static int primec = 0;
 
 /* Function Prototypes */
 int truncateLeft(int i);
+uint32_t intrev(uint32_t i);
 int truncateRight(int i);
 int trueLeft(int prime);
 int trueRight(int prime);
@@ -38,10 +41,10 @@ int inPrimes(int i);
 int in(int i, int res[]);
 int justifyParent(int prime);
 int strtoint(char *string);
-int main();
+int main(int argc, char** argv);
 
 
-int main()
+int main(int argc, char** argv)
 {
         register int prime;
 
@@ -116,14 +119,8 @@ int trueRight(int prime)
 int truncateLeft(int i)
 {
         if(i < 10) return i; 
-                
-        char *string = malloc(16 * sizeof(char));
-
-        sprintf(string, "%d", i);
-
-        string += 1;
-
-        return strtoint(string);
+        
+        return intrev(intrev(i) / 10);
 }
 
 
@@ -134,16 +131,7 @@ int truncateRight(int i)
 {
         if(i < 10) return i;
                 
-        int c;
-        char *string = malloc(16 * (sizeof(char)));
-
-        sprintf(string, "%d", i);        
-
-        for(c = 0; *string++ != '\0'; c++);
-
-        string[c - 1] = '\0';
-
-        return strtoint(string);
+        return i / 10;
 }
 
 
@@ -243,3 +231,17 @@ int justifyParent(int prime)
 
 }
 
+uint32_t intrev(uint32_t i)
+{
+        uint32_t rev = 0;
+        uint32_t rem;
+
+        while(i){
+                rem = i % BASE;
+                rev *= BASE;
+                rev += rem;
+                i /= BASE;
+        }
+
+        return rev;
+}

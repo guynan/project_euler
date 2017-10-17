@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <inttypes.h>
 
 
 #define MAX     999
@@ -30,8 +31,8 @@ int main(int argc, char** argv)
         uint32_t test; uint32_t longest;
 
         /* Fuck this waterfall, like really */
-        for(uint32_t i = 0; i < MAX; i++){
-                for(uint32_t j = 0; a < MAX; a++){
+        for(uint32_t i = START; i < MAX; i++){
+                for(uint32_t j = START; j < MAX; j++){
 
                         test = i * j;
 

@@ -12,70 +12,60 @@
  * other data sets */
 
 #include <stdio.h>
+#include <stdint.h>
+
 
 #define MAX     999
+#define BASE    10
+#define START   100
 
-/* Prototypes */
-int main();
-int is_palindrome(int i);
-int len(int i);
 
-int main()
+int main(int argc, char** argv);
+int isPalindrome(uint32_t i);
+uint32_t intrev(uint32_t i);
+
+
+int main(int argc, char** argv)
 {
-        register int test; int longest;
+        uint32_t test; uint32_t longest;
 
         /* Fuck this waterfall, like really */
-        for(int i = 0; i < MAX; i++){
-                for(int a = 0; a < MAX; a++){
-                        test = i * a;
-                        if(is_palindrome(test)){
-                                if(test > longest){
+        for(uint32_t i = 0; i < MAX; i++){
+                for(uint32_t j = 0; a < MAX; a++){
+
+                        test = i * j;
+
+                        if(isPalindrome(test) && test > longest){
                                         longest = test;
-                                }
                         }
                 }
         }
-        printf("%d\n", longest);
+
+        printf("%"PRIu32"\n", longest);
 
         return 0;
 
 }
 
-/* Checks if it is a palindrome
- * through string manipulation */
-int is_palindrome(int i)
+
+uint32_t intrev(uint32_t i)
 {
-        int length = len(i);
-        char strcpy[length]; char check[length];
-        
-        sprintf(strcpy, "%d", i);
+        uint32_t rev = 0;
+        uint32_t rem;
 
-        length--;
-
-        /* Creates array reverse of i */
-        for(int a = 0; length >= 0; length--, a++){
-                check[length] = strcpy[a];
+        while(i){
+                rem = i % BASE;
+                rev *= BASE;
+                rev += rem;
+                i /= BASE;
         }
 
-        for(int l = 0; check[l] != '\0' ; l++){
-                if(check[l] != strcpy[l]){
-                        return 0;
-                }
-        }
-
-        return 1;
-
+        return rev;
 }
 
 
-/* lol will return 6 always */
-int len(int i)
+int isPalindrome(uint32_t i)
 {
-        int a = 0; char strcpy[64];
-        
-        sprintf(strcpy, "%d", i);
-        for(; strcpy[a] != '\0'; a++);
-
-        return a;
+        return (i == intrev(i));
 }
 

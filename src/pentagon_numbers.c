@@ -6,72 +6,81 @@
  * Answer: 5482660
  * Project Euler: 44 */
 
+
 #include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <inttypes.h>
+
 
 /* Should be less than 10000 */
 #define MAX     3000
 
-long long pentagons[MAX];
-
 /* Prototypes */
-int main();
-void initPentagons();
-int isPentagonal(long n);
+int main(int argc, char** argv);
+uint32_t* initPentagons(uint32_t limit);
+int isPentagonal(uint32_t n, uint32_t* pent);
 
-int main()
+
+int main(int argc, char** argv)
 {
-        int difference; register long k, j;
 
-        initPentagons();
+        uint32_t k, j, diff;
 
-        for(int a = 5; a < MAX; a++){
-                for(int b = 5; b < MAX; b++){
+        uint32_t* pent = initPentagons(MAX);
+
+        for(uint32_t a = 5; a < MAX; a++){
+                for(uint32_t b = 5; b < MAX; b++){
                                 
-                        if(a == b){
-                                break;
-                        }
+                        if(a == b) break;
 
-                        k = pentagons[a]; j = pentagons[b];
+                        k = pent[a];
+                        j = pent[b];
+                        
+                        diff = k - j;
 
-                        if(isPentagonal(k + j) && isPentagonal(k - j)){
-                                difference = k - j ;
-                                break;
+                        if(isPentagonal(k + j, (pent + a)) && isPentagonal(diff, pent)){
+                                goto done;
                         }
                 }
 
-                if(difference != 0){
-                        break;
-                }
         }
 
-        printf("%d\n", difference);
+        done:
+                printf("%"PRIu32"\n", diff);
 
         return 0;
+
 }
 
-/* Initialise list of
- * pentagonal numbers */
-void initPentagons()
+
+/* Initialise array of pentagonal numbers */
+uint32_t* initPentagons(uint32_t limit)
 {
-        for(int n = 0; n < MAX; n++){
-                pentagons[n] = (n * (3*n - 1))/2;
+        uint32_t* pent = malloc(limit * sizeof(uint32_t));
+        
+        if(!pent){
+                exit(1);
         }
+
+        for(uint32_t n = 0; n < limit; n++){
+                pent[n] = (n * (3*n - 1))/2;
+        }
+
+        return pent;
 
 }
 
 /* Asks if is pentagonal by
  * iterating over the pentagon array */
-int isPentagonal(long n)
+int isPentagonal(uint32_t n, uint32_t* pent)
 {
         
-        for(int i = 0; i < MAX; i++){
-                if(n == pentagons[i]){
-                        return 1;
-                }
+        for(uint32_t i = 0; i < MAX; i++){
 
-                if(n < pentagons[i]){
-                        return 0;
-                }
+                if(n == pent[i]) return 1;
+
+                if(n < pent[i]) return 0;
 
         }
 

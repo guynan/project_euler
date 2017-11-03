@@ -45,7 +45,8 @@ uint64_t* sieve(uint64_t max)
         for(uint64_t c = 2; c <= max; *(se + c) = 1, c++);
 
         /* Start the sieve */
-	for(i = 2; i <= max; i++){
+	for(i = 2; i <= max; i++)
+	{
 		if(se[i]) {
 			for (j = i; (i * j) <= max; j++) {
 				se[(i * j)] = 0;

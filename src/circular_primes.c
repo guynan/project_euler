@@ -8,60 +8,50 @@
  * How many circular primes are there below one million?
 
  * Project Euler: 35 
- * Answer: 55
- 
- * Please when compiling use the `-O2' flag */
+ * Answer: 55 */ 
 
 
 /* Includes */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <inttypes.h>
 #include <math.h>
 
 
 /* Definitions */
-#define MAX     1000000
-static int primes[80000]; // I counted them
-static int result[60];
-static int resc = 0;
+#define MAX             1000000
+#define PRIME_C         80000 
+
+static uint32_t result[60];
+static uint32_t resc = 0;
 
 
 /* Prototypes */
-int stringcomp(char *this, char *that);
-int isPrime(unsigned int s);
-void strprint(char *string);
-int strtoint(char *string);
-int in(int i, int *array);
-void append(int *array);
-int oneRotation(int i);
-int len(char *string);
-void circulate(int i);
-int inPrimes(int i);
-void initPrimes();
-int main();
+int in(uint32_t i, uint32_t *array);
+uint32_t oneRotation(uint32_t i);
+int main(int argc, char** argv);
+void append(uint32_t* array);
+void circulate(uint32_t i);
+int isPrime(uint32_t s);
 
 
-int main()
+int main(int argc, char** argv)
 {
-        initPrimes();
-
-        /* Speed increase: Use list of primes how
-         * you should for fucks sake. Iterate over list
-         * checking if it is a prime and then append.
-         * Here we check 1 million integers vs. just
-         * ~ 75,000 primes */
-        for(int i = 0; i < MAX; i++){
+        for(uint32_t i = 1; i < MAX; i+= 2){
                 circulate(i);
+                
         }
 
         int counter = 0;
-        for(int i = 0 ; i < 60; i++){
+        for(uint32_t i = 0 ; i < 60; i++){
                 if(result[i] != 0){
                         counter++;
                 }
         }
 
-        printf("%d\n", counter);
+        printf("%d\n", counter + 1);
+
         return 0;
         
 }        
@@ -69,7 +59,7 @@ int main()
 
 /* Checks if an integer is a prime
  * in the most efficient way I know */
-int isPrime(unsigned int s)
+int isPrime(uint32_t s)
 {
         if (s <= 1) return 0;
 
@@ -87,86 +77,29 @@ int isPrime(unsigned int s)
         return 0;
 }
 
-/* Generate a list of primes up to 1mil */
-void initPrimes()
-{
-        int count = 0;
-
-        for(int i = 0; i < MAX; i++){
-                if(isPrime(i)){
-                        primes[count++] = i;
-                }
-        }
-}
-
-        
-/* This checks to see if `i` is
- * in the list of generated primes */
-int inPrimes(int i)
-{
-        int *prime = primes;
-        while(*prime != '\0'){
-                if(i == *prime) return 1;
-                if(i < *prime++) return 0;
-        }
-
-        return 0;
-}
-
-
-/* Compares two strings */
-int stringcomp(char *this, char *that)
-{
-        while(*this != '\0'){
-                if(*this++ != *that++) return 0;
-        }
-
-        return (*that != '\0') ? 0 : 1; 
-}
-
-
-/* Length of a string array */
-int len(char *string)
-{
-        int i;
-
-        for(i = 0; *string++ != '\0'; i++);
-
-        return i;
-}
-
 
 /* A real monty of a function:
  * We first have a look through all possible 
  * circular iterations of the integer `i`. 
  * If they are all prime numbers themselves; 
  * we chuck them in the `result` array using `append` */
-void circulate(int i)
+void circulate(uint32_t i)
 {
-        int rotated, count = 0;
-        int *circular = malloc(16 * sizeof(int));
-        char *strcp = malloc(16 * sizeof(char));
+        uint32_t rotated, count = 0;
+        uint32_t *circular = malloc(16 * sizeof(uint32_t));
 
         /* This is so we dont start rotating
-         * one index integers */
+         * one index uint32_tegers */
         if(i < 10){
-
-                if(inPrimes(i)){
-                        result[resc++] = i;
-                }
-
+                if(isPrime(i)) result[resc++] = i;
                 return;
         }
-
-        /* Create n as a an array of
-         * characters */
-        sprintf(strcp, "%d", i);
 
         /* Do one rotation so we can enter the loop */
         rotated = oneRotation(i);
 
         /* Return if it isn't even a prime */
-        if(!inPrimes(i)){
+        if(!isPrime(i)){
                 return;
         }
 
@@ -175,7 +108,7 @@ void circulate(int i)
         /* While rotated value != i */
         while(i != rotated){
 
-                if(inPrimes(rotated)){
+                if(isPrime(rotated)){
                         rotated = oneRotation(rotated);
                         circular[count++] = rotated;
                 }
@@ -185,55 +118,24 @@ void circulate(int i)
         }
 
         append(circular);
+        free(circular);
 
 }
 
 
-/* Print a string */
-void strprint(char *string)
+uint32_t oneRotation(uint32_t i)
 {
-        for( ; *string != '\0'; printf("%c", *string++));
-        printf("\n");
+        uint32_t len = floor(log10(i));
+        uint32_t first = i % 10;
+        i /= 10;
+        return pow(10, len) * first + i;
 }
 
-
-/* @param: This takes a string
- * as an argument and returns an array of 
- * the rotated value */
-int oneRotation(int i)
-{
-        char *string = malloc(16 * sizeof(char));
-        char *res = malloc(16 * sizeof(char));
-
-        sprintf(string, "%d", i);
-        
-        for(int c = 1; string[c] != '\0'; c++){
-
-                if(string[c + 1] == '\0'){
-                        res[0] = string[c];
-                }
-
-                res[c] = string[c - 1];
-        }
-
-        return strtoint(res);
-}
-
-
-/* Convert a string to a decimal integer */
-int strtoint(char *string)
-{
-        int dec = 0;
-
-        for( ; *string != '\0'; dec = dec * 10 + (*string++ - '0'))
-                ;
-
-        return dec;
-}
 
 /* Inserts the items of the array into the `result` array */
-void append(int *array)
+void append(uint32_t* tmp)
 {
+        uint32_t* array = tmp;
         /* Only need to check if one item is
          * in the list to know all the circular
          * primes are indeed in the list */
@@ -255,10 +157,11 @@ void append(int *array)
 
 /* Pretty simple search; could make this faster by
  * appending in order and be able to break earlier */
-int in(int i, int *array)
+int in(uint32_t i, uint32_t* array)
 {
-        while(*array != '\0'){
-                if(i == *array++) return 1;
+        uint32_t* tmp = array;
+        while(*tmp != '\0'){
+                if(i == *tmp++) return 1;
         }
 
         return 0;

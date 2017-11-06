@@ -6,40 +6,55 @@
 
 /* Includes */
 #include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
+
 
 /* Definitions */
 #define MAX 500
 #define MAXLEN 50000
 
-/* Prototypes */
-int numdivis(long f);
-int main();
 
-int main()
+/* Prototypes */
+uint64_t maxTriDivis(uint32_t max);
+int main(int argc, char** argv);
+uint32_t numdivis(uint64_t f);
+
+
+int main(int argc, char** argv)
 {
 
-        register long int last = 3;
+        (void) argc;
+        (void) argv;
 
-        /* Beware infinite loop */
-        for(long int i = 3; ; last += i, i++){
+        printf("%"PRIu64"\n", maxTriDivis(MAX));
+
+        return 0;
+}
+
+
+uint64_t maxTriDivis(uint32_t max)
+{
+        uint64_t last = 3;
+
+        for(uint64_t i = 3; ; last += i++){
                 
-                if (numdivis(last) > MAX){
-                        break;
-                }
+                if (numdivis(last) > max) break;
         }
 
-        printf("%li\n", last);
+        return last;
 }
-        
-int numdivis(long f)
-{
-        int count = 1;
-        register int i;
 
-        for(i = 1; i*i < f; i++){
-                count += (f % i == 0) ? 1 : 0;
+        
+uint32_t numdivis(uint64_t f)
+{
+        uint32_t count = 1;
+
+        for(uint32_t i = 1; i*i < f; i++){
+                count += (f % i == 0);
         }
 
         return 2 * count;
 
 }
+

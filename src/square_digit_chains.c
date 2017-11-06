@@ -1,8 +1,7 @@
 /* A number chain is created by continuously adding 
  * the square of the digits in a number to form a 
  * new number until it has been seen before.
-
- * For example,
+* For example,
 
  * 44 → 32 → 13 → 10 → 1 → 1
  * 85 → 89 → 145 → 42 → 20 → 4 → 16 → 37 → 58 → 89
@@ -21,6 +20,8 @@
 
 /* Inclusions */
 #include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
 #include <math.h>
 
 
@@ -29,21 +30,20 @@
 
 
 /* Function Prototypes */
-int main();
-char * castIntString(int i);
-int strtoint(char *string);
-int satisfies(int i);
+uint32_t numberChain(uint32_t i);
+inline uint32_t sqr(uint32_t i);
+int main(int argc, char** argv);
 
-int main()
+int main(int argc, char** argv)
 {
-        int count;
+        uint32_t count = 0;
 
-        for(int i = 1; i < MAX; i++){
+        for(uint32_t i = 1; i < MAX; i++){
 
-                count += (satisfies(i)) ? 1 : 0;
+                count += (89 == numberChain(i));
         }
 
-        printf("%d\n", count);
+        printf("%"PRIu32"\n", count);
 
 
         return 0;
@@ -51,49 +51,29 @@ int main()
 }
 
 
-/* Here we do some cheeky string hacking 
- * to check if the number chain ends in 89 */
-int satisfies(int i)
+uint32_t numberChain(uint32_t i)
 {
-        int sum = 0;
-        char *strptr = castIntString(i);
+        uint32_t sum = 0;
 
-        for( ; ; strptr = castIntString(sum)){
+        while(1){
 
                 /* Finds the sum of square of numbers in loop */
-                for(sum = 0; *strptr != '\0'; sum += pow((*strptr++ - '0'), 2));
+                for(sum = 0; i != 0 ; ){
+                        sum += sqr(i % 10);
+                        i /= 10;
+                }
 
-                if(sum == 89 || sum == 1) break;
+                i = sum;
 
+                if(sum == 1 || sum == 89) break;
         }
 
-        return (sum == 89);
+        return sum;
 
 }
 
-
-/* Simply casts an integer to a string */
-char * castIntString(int i)
+inline uint32_t sqr(uint32_t i)
 {
-        static char string[32];
-
-        /* I don't want to have to do 
-         * it like this but I am also sleepy */
-        sprintf(string, "%d", i);
-
-        return string;
-}
-
-
-/* Convert a string to a decimal integer */
-int strtoint(char *string)
-{
-        int dec;
-
-        for(dec = 0; *string != '\0'; ){
-                dec = dec * 10 + (*string++ - '0');
-        }
-
-        return dec;
+        return i * i;
 }
 

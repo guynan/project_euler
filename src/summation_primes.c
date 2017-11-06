@@ -7,46 +7,50 @@
 
 /* Includes */
 #include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
 #include <math.h>
 
 /* Definitions */
 #define MAX 2000000
 
 /* Prototypes */
-int isprime(unsigned int s);
-int main();
+int isPrime(uint32_t s);
+int main(int argc, char** argv);
 
-int main()
+int main(int argc, char** argv)
 {
-        long long unsigned int primesum = 2;
+        (void) argc;
+        (void) argv;
 
-        for(unsigned int i = 3; i < MAX; i++){
-                if (isprime(i)){
-                        primesum += i;
-                }
+        uint64_t sum = 2;
+
+        for(uint32_t i = 3; i < MAX; i += 2){
+
+                if (isPrime(i)) sum += i;
         }
 
-        printf("%llu\n", primesum);
+        printf("%"PRIu64"\n", sum);
 
 }
        
-/* This is the bottleneck. Takes ages */
-int isprime(unsigned int s)
+
+int isPrime(uint32_t s)
 {
-        int isprime = 0; /* False */
-        int top = (int) round(sqrt(s))+1;
+        /* Theoretically shouldn't get values
+         * less than zero due to type safety */
+        if (s < 2) return 0;
 
-        for(int i = 2; i < top +1 ; i++){
-                if(i == top){
-                        isprime = 1; /* True */
-                        break; 
-                }
+        /* Preventing rounding errors */
+        uint32_t top = (uint32_t) round(sqrt(s) + 1);
 
-                if (s % i == 0){
-                        break;
-                }
+        for(uint32_t i = 2; i < top + 1; i++){
+
+                if(i == top) return 1;
+
+                if(s % i == 0) break;
         }
 
-        return isprime;
+        return 0;
 }
-                
+

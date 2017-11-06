@@ -18,56 +18,46 @@
 
 /* Definitions */
 #define MAX_LEN 20
-#define	START	0
 #define MIN     1020304050607080900 
-int comparison[MAX_LEN]; 
 
 
 /* Prototypes */
-int satisfied(uint64_t i);
-int main();
+int isConcealedSquare(uint64_t i);
+int main(int argc, char** argv);
 
-int main()
+
+int main(int argc, char** argv)
 {
-
-        /* Generate the int comparison array; '\0'
-         * used as a placeholder in array */
-        for(int i = 2; i < MAX_LEN; i++){
-                comparison[i-2] = (i % 2 == 0) ? i/2 : '\0';
-        }
+        (void) argc;
+        (void) argv;
 
         uint64_t test; uint64_t i;
 
-        for(i = START; ; i++){
+        for(i = 0; ; i+= 2){
 
                 test = i*i;
 
                 if(test < MIN) continue;
 
-                if(satisfied(test)) break;
+                if(isConcealedSquare(test)) break;
 
         }
         
-        printf("%lli\n", (long long) i);
+        printf("%"PRIu64"\n", i);
 
 	return 0;
 
 }
 
 
-int satisfied(uint64_t i)
+int isConcealedSquare(uint64_t i)
 {
-        char *intstr = malloc(MAX_LEN * sizeof(int));
-        int x;
+        if(i % 10 != 0) return 0;
+        i /= 100;
 
-        sprintf(intstr, "%" PRIu64, i);
-
-        for(int a = 0; a < MAX_LEN; a += 2){
-
-		/* Manual str to int conversion */
-		x = *intstr++ - '0';
-
-                if(x != comparison[a]) return 0;
+        for(uint32_t a = 9; i; a--){
+                if(i % 10 != a) return 0;
+                i /= 100;
         }
 
         return 1;

@@ -9,57 +9,69 @@
  * Answer: 7652413 */
 
 
-/* Includes */
 #include <stdio.h> 
+#include <stdlib.h> 
+#include <stdint.h> 
+#include <string.h> 
+#include <inttypes.h> 
 #include <math.h> 
 
 
-/* Definitions */
-#define START   2000000 /* Skip a couple */
-#define MAX     8000000
+/* The key here is noting that the greatest pandigit 1 - 9 is 987654321, 
+ * though by use of the divisibility rule, by taking the sum over all the 
+ * digits we note that all permutations of the maxima across 9******** and also
+ * 8*******, we note that their digital sums are 45 and 36 respectively which 
+ * means that they are both at least divisible by 3. Thus these can be excluded
+ * from the search as for the number to be prime it must not be divisible by
+ * anything aside from one and itself. Thus our search space has been cut down
+ * massively and we start searching from 7654321 and decreasing each time by
+ * two (as we know that our number must too be odd) we find the number */
 
 
-/* Protoypes */
-int isPandigit(long int i);
-int isPrime(unsigned long s);
-int contains(char *string, int i);
-void strprint(char *string);
-int main();
+#define MAX             7654321
+#define MAX_DIGIT_LEN   9 
 
 
-int main()
+int main(int argc, char** argv);
+int contains(char *str, int i);
+int isPandigit(uint64_t i);
+int isPrime(uint64_t s);
+
+
+int main(int argc, char** argv)
 {
-        unsigned long int i;
-        unsigned long int longest = 0;
+        (void) argc;
+        (void) argv;
 
-        for(i = START; i < MAX; i++){
-		if (isPandigit(i)) {
-			if (isPrime(i)){
-                                longest = i;
-			}
+        uint64_t i;
+
+        for(i = MAX; i > 0; i-= 2){
+		if (isPandigit(i) && isPrime(i)) {
+                                goto done;
                 }
         }
 
-        printf("%li\n", longest);
+        done:
+                printf("%"PRIu64"\n", i);
 
         return 0;
 }
 
 
-/* Convoluted way of checking if
- * the number is a pandigit */
-int isPandigit(long int i)
+/* Convoluted way of checking if the number is a pandigit */
+int isPandigit(uint64_t i)
 {
-        char string[16];
+        
+        static char str[MAX_DIGIT_LEN];
 
-        sprintf(string, "%li", i);
+        sprintf(str, "%" PRIu64, i);
 
-        for(int c = 1; string[c - 1] != '\0'; c++){
+        for(int c = 1; str[c - 1] != '\0'; c++){
 
                 /* If it contains 0, not pandigital */
-                if(!(string[c - 1] - '0')) return 0;
+                if(!(str[c - 1] - '0')) return 0;
 
-                if(!contains(string, c)) return 0;
+                if(!contains(str, c)) return 0;
 
         }
 
@@ -68,44 +80,34 @@ int isPandigit(long int i)
 }
 
 
-/* Checks if an integer is a prime
- * in the most efficient way I know */
-int isPrime(unsigned long s)
+int isPrime(uint64_t s)
 {
-        if (s == 0 || s == 1) return 0;
+        /* Theoretically shouldn't get values
+         * less than zero due to type safety */
+        if (s < 2) return 0;
 
-        if (s == 2) return 1;
+        /* Preventing rounding errors */
+        uint64_t top = (uint64_t) round(sqrt(s) + 1);
 
-        /* Hopefully preventing rounding errors */
-        int top = (int) round(sqrt(s) + 1);
+        for(uint64_t i = 2; i < top + 1; i++){
 
-        for(int i = 2; i < top+1; i++){
                 if(i == top) return 1;
 
-                if (s % i == 0) return 0;
+                if(s % i == 0) break;
         }
 
         return 0;
 }
 
 
-/* Iterates through string to see if
- * it is indeed in there */
-int contains(char *string, int i)
+
+/* Iterates through string to see if it is indeed in there */
+int contains(char* string, int i)
 {
-        for( ; *string != '\0'; ){
-                if((*string++ - '0') == i) return 1;
+        for(char* tmp = string; *tmp != '\0'; ){
+                if((*tmp++ - '0') == i) return 1;
         }
 
         return 0;
-}
-
-
-/* Print a string like Python bro */
-void strprint(char *string)
-{
-        for( ; *string != '\0'; printf("%c", *string++))
-                ;
-        printf("\n");
 }
 

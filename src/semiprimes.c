@@ -9,86 +9,88 @@
  * How many composite integers, n < 10**8, have
  * precisely two, not necessarily distinct, prime factors?
 
- * Project Euler: 187 */
+ * Project Euler: 187 
+ *
+ * Answer: 17427258 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <math.h>
+#include <string.h>
+#include <inttypes.h>
 
 
-#define MAX     100000000
+#define MAX                     100000000
 
 
 /* Prototypes */
-int isPrime(uint32_t s);
-int hasTwoPrimeFac(int i);
-uint32_t facnum(uint32_t n, uint32_t* fac);
+uint64_t countSemiprimes(uint64_t max);
 int main(int argc, char** argv);
+uint64_t* sieve(uint64_t max);
+
 
 int main(int argc, char** argv)
 {
-        int counter = 0;
-        uint32_t* factors = calloc(MAX, sizeof(uint32_t));
+        (void) argc;
+        (void) argv;
 
-        for(int i = 0; i < MAX; i++){
-                if(facnum(i, factors) == 2){
-                        counter++;
-//                        printf("%d\n", i);
-                }
-        }
+        printf("%"PRIu64"\n", countSemiprimes(MAX));
         
-
-        printf("%d\n", counter);
-}
-
-
-int isPrime(uint32_t s)
-{
-        /* Theoretically shouldn't get values
-         * less than zero due to type safety */
-        if (s < 2) return 0;
-
-        /* Preventing rounding errors */
-        uint32_t top = (uint32_t) round(sqrt(s) + 1);
-
-        for(uint32_t i = 2; i < top + 1; i++){
-
-                if(i == top) return 1;
-
-                if(s % i == 0) break;
-        }
-
         return 0;
+
 }
 
-
-uint32_t facnum(uint32_t n, uint32_t* factors)
+uint64_t countSemiprimes(uint64_t max)
 {
-        uint32_t orig = n;
-        uint32_t count = 0;
-        uint32_t z = 2;
+        uint64_t prime_max = max / 2;
 
-        while(z * z <= n){
-                if(n % z == 0){
-                        if(factors[z]) return 3;
-                        count++;
-                        n /= z;
+        uint64_t c = 0;
+
+        uint64_t* primes = sieve(prime_max);
+
+        for(uint64_t i = 0; i < prime_max; i++){
+                if(!primes[i]) continue;
+
+                for(uint64_t j = i; j < prime_max; j++){
+
+                        if(!primes[j]) continue;
+
+                        if(i * j >= max) break;
+
+                        c++;
                 }
-
-                else z++;
-
-                if(count > 2){
-                        factors[orig] = 1;
-                        return 3;
-                }
-
         }
 
-        if(n > 1){
-                count++;
-        }
+        free(primes);
 
-        return count;
+        return c;
+}
+
+
+/* Takes one argument of an integer and returns a pointer to an array of
+ * integers with booleans for each index that indicate whether that integer is 
+ * indeed a prime number. */
+uint64_t* sieve(uint64_t max)
+{
+        uint64_t i = 0; uint64_t j = 0;
+
+	uint64_t *se = malloc((max + 1)* sizeof(uint64_t));
+
+        memset(se, 1, (max + 1) * sizeof(uint64_t));
+
+        se[0] = 0; se[1] = 0;
+
+        /* Start the sieve */
+	for(i = 2; i <= max; i++){
+		if(se[i]) {
+			for (j = i; (i * j) <= max; j++) {
+				se[(i * j)] = 0;
+			}
+		}
+	}
+
+	return se;
 
 }
+
+        

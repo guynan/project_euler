@@ -11,83 +11,84 @@
 
  * Project Euler: 187 */
 
-#include<stdio.h>
-#include<math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <math.h>
 
 
-//#define MAX     100000000
-#define MAX     4
+#define MAX     100000000
 
 
 /* Prototypes */
-int isPrime(unsigned int s);
+int isPrime(uint32_t s);
 int hasTwoPrimeFac(int i);
-int main();
+uint32_t facnum(uint32_t n, uint32_t* fac);
+int main(int argc, char** argv);
 
-int main()
+int main(int argc, char** argv)
 {
         int counter = 0;
+        uint32_t* factors = calloc(MAX, sizeof(uint32_t));
 
         for(int i = 0; i < MAX; i++){
-//                counter += (hasTwoPrimeFac(i)) ? 1 : 0;
-                if(hasTwoPrimeFac(i)){
+                if(facnum(i, factors) == 2){
                         counter++;
-                        printf("%d\n", i);
+//                        printf("%d\n", i);
                 }
         }
-
+        
 
         printf("%d\n", counter);
 }
 
 
-/* Detects whether int is prime */
-int isPrime(unsigned int s)
+int isPrime(uint32_t s)
 {
-        if (s == 0 || s == 1){
-                return 0;
-        }
+        /* Theoretically shouldn't get values
+         * less than zero due to type safety */
+        if (s < 2) return 0;
 
-        if (s == 2){
-                return 1;
-        }
+        /* Preventing rounding errors */
+        uint32_t top = (uint32_t) round(sqrt(s) + 1);
 
-        int top = (int) round(sqrt(s) +1);
+        for(uint32_t i = 2; i < top + 1; i++){
 
-        for(int i = 2; i < top+1; i++){
-                if(i == top){
-                        return 1;
-                }
+                if(i == top) return 1;
 
-                if (s % i == 0){
-                        return 0;
-                }
+                if(s % i == 0) break;
         }
 
         return 0;
 }
 
 
-int hasTwoPrimeFac(int i)
+uint32_t facnum(uint32_t n, uint32_t* factors)
 {
-        int primec = 0;
+        uint32_t orig = n;
+        uint32_t count = 0;
+        uint32_t z = 2;
 
-        for(int f = 1; f <= i; f++){
-
-                /* If is a factor of... */
-                if(i % f == 0){
-
-                        /* If `f' is a prime... */
-                        primec += (isPrime(f)) ? 1 : 0;
+        while(z * z <= n){
+                if(n % z == 0){
+                        if(factors[z]) return 3;
+                        count++;
+                        n /= z;
                 }
-                
-                if(primec == 2){
-                        return 1;
+
+                else z++;
+
+                if(count > 2){
+                        factors[orig] = 1;
+                        return 3;
                 }
 
         }
 
-        return 0;
+        if(n > 1){
+                count++;
+        }
+
+        return count;
 
 }
-

@@ -6,29 +6,28 @@
  *
  * Project Euler: 6 */
 
-/* Includes */
 #include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
 
-/* Definitions */
-#define MAX 101
 
-/* Prototypes */
-int square(int i);
+#define MAX             100
+#define SQUARE(n)       ((n) * (n))
 
-int main()
+
+int main(int argc, char** argv);
+
+
+int main(int argc, char** argv)
 {
-        register int sqrsum = 0; int total = 0;
+        uint64_t sqrsum = 0;
+        uint64_t total = 0;
 
-        for(int i = 0; i < MAX; i++){
-                sqrsum += square(i);
+        for(uint64_t i = 0; i <= MAX; i++){
+                sqrsum += SQUARE(i);
                 total += i;
         }
 
-        printf("%d\n", square(total) - sqrsum);
+        printf("%"PRIu64"\n", SQUARE(total) - sqrsum);
 }
 
-int square(int i)
-{
-        int s = i*i;
-        return s;
-}

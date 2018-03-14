@@ -1,48 +1,68 @@
-/* Finding the longest Collatz sequence 
- * under 1 million. 
+/* Finding the longest Collatz sequence
+ * under 1 million.
  *
  * Answer: 837799
  *
  * Project Euler: 14 */
 
-/* Includes */
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <inttypes.h>
 
-/* Defintions */
-#define MAX     1000000
 
-/* Prototypes */
-long get_n(long n);
-int main();
+/* Apply the Collatz function to n */
+#define COLLATZ_MACRO(n)        (((n) % 2 == 0) ? (n)/2 : (3*(n)) + 1)
+#define MAX                     1000000
 
-int main()
+int main(int argc, char** argv);
+
+/* Global access for the length of the longest Collatz sequence
+ * and what number --thus far-- generates the longest sequence */
+static uint64_t longest = 0;
+static uint64_t longcount = 0;
+
+
+int main(int argc, char** argv)
 {
-        unsigned long int count = 0;
-        unsigned long int longest = 0;
-        unsigned int longcount = 0;
+        /* To reduce recalculations, we store results for the count of numbers
+         * in this array to cache the result of the previous additions and
+         * be able to add that to newer calculations, making this approximately
+         * able to run in linear time... */
+        uint64_t* collatz = NULL;
+        collatz = calloc(MAX + 2, sizeof(uint64_t));
 
-        for(long i = 2; i < MAX; i++){
-                count = 0;
+        if(!collatz){
+                return -1;
+        }
 
-                for(register long n = i; n != 1; count++){
-                        n = get_n(n);
+        for(uint64_t i = 2; i < MAX; i++){
+
+                uint64_t count = 0;
+                for(uint64_t n = i; n != 1; count++){
+
+                        /* Check to see if function has been applied already;
+                         * if so, add this to the current count and move on */
+                        if(n < MAX && collatz[n]){
+                                count += collatz[n];
+                                break;
+                        }
+
+                        n = COLLATZ_MACRO(n);
                 }
 
                 if (count > longcount){
                         longcount = count;
                         longest = i;
                 }
+
+                collatz[i] = count;
         }
 
-        printf("%li\n", longest);
+        free(collatz);
+
+        printf("%"PRIu64"\n", longest);
 
         return 0;
-}        
-                                
-
-/* Returns value of n depending
- * on whether it is even or not */
-long get_n(long n)
-{
-        return (n % 2 == 0) ? n/2 : (3 * n) + 1;
 }
+

@@ -31,9 +31,11 @@
 #define END_RATIO       99
 #define DIGIT_LEN       10
 
+
+int eval_bouncy(int i, int (*cmp)(uint32_t, uint32_t));
+int desc(uint32_t a, uint32_t b);
+int asc(uint32_t a, uint32_t b);
 int main(int argc, char** argv);
-int isdesc(uint32_t i);
-int isasc(uint32_t i);
 
 
 int main(int argc, char** argv)
@@ -44,7 +46,7 @@ int main(int argc, char** argv)
 
         for(uint32_t i = START + 1; ; i++){
 
-                count += (!isdesc(i) && ! isasc(i));
+                count += (!eval_bouncy(i, desc) && ! eval_bouncy(i, asc));
 
                 /* We do this little dance where we take the percentage to
                  * avoid floating point calculations and flawed comparisons. We
@@ -61,30 +63,25 @@ int main(int argc, char** argv)
 
 }
 
-int isdesc(uint32_t i)
+inline int desc(uint32_t a, uint32_t b)
 {
-        int last = i % 10;
-        i /= 10;
-
-        while(i){
-                if(i % 10 > last)
-                        return 0;
-                last = i % 10;
-                i /= 10;
-        }
-
-        return 1;
-                
+        return a > b;
 }
 
-int isasc(uint32_t i)
+inline int asc(uint32_t a, uint32_t b)
+{
+        return a < b;
+}
+
+int eval_bouncy(int i, int (*cmp)(uint32_t, uint32_t))
 {
         int last = i % 10;
         i /= 10;
 
         while(i){
-                if(i % 10 < last)
+                if(cmp(i % 10, last))
                         return 0;
+
                 last = i % 10;
                 i /= 10;
         }

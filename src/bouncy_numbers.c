@@ -19,41 +19,39 @@
  *
  * Project Euler: 112
  *
- * Answer: */
+ * Answer: 1587000 */
 
-#include <math.h>
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include <inttypes.h>
 
 
 #define START           21780
-#define START_RATIO     0.9
-#define END_RATIO       0.99
+#define START_RATIO     90
+#define END_RATIO       99
 #define DIGIT_LEN       10
 
 int main(int argc, char** argv);
-int isAscending(char* a);
-int isDescending(char* a);
+int isdesc(uint32_t i);
+int isasc(uint32_t i);
 
 
 int main(int argc, char** argv)
 {
-        char* digit = malloc(DIGIT_LEN * sizeof(char));
-
         /* Start with a known proportion and go from there
          * up until we find the expected ratio */
-        uint32_t count = START * START_RATIO;
+        uint32_t count = (START * START_RATIO) / 100;
 
         for(uint32_t i = START + 1; ; i++){
 
-                sprintf(digit, "%"PRIu32, i);
-                
-                count += (!isDescending(digit) && ! isAscending(digit));
+                count += (!isdesc(i) && ! isasc(i));
 
-                if(ceil(i * END_RATIO) == count){
+                /* We do this little dance where we take the percentage to
+                 * avoid floating point calculations and flawed comparisons. We
+                 * also ensure that the number we produce is evenly divisible
+                 * so we don't get a result that is approximate */
+                uint32_t curr = (i * END_RATIO) / 100;
+                if(curr == count && ((i * END_RATIO) % 100) == 0){
                         printf("%d\n", i);
                         break;
                 }
@@ -63,31 +61,35 @@ int main(int argc, char** argv)
 
 }
 
-int isDescending(char* a)
+int isdesc(uint32_t i)
 {
-        char last = *a;
-        a++;
+        int last = i % 10;
+        i /= 10;
 
-        while(*a){
-                if(*a > last) return 0;
-                last = *a;
-                a++;
+        while(i){
+                if(i % 10 > last)
+                        return 0;
+                last = i % 10;
+                i /= 10;
         }
 
         return 1;
                 
 }
 
-int isAscending(char* a)
+int isasc(uint32_t i)
 {
-        char last = *a;
-        a++;
+        int last = i % 10;
+        i /= 10;
 
-        while(*a){
-                if(*a < last) return 0;
-                last = *a;
-                a++;
+        while(i){
+                if(i % 10 < last)
+                        return 0;
+                last = i % 10;
+                i /= 10;
         }
 
         return 1;
+                
 }
+

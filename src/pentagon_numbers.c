@@ -24,10 +24,16 @@ int isPentagonal(uint32_t n, uint32_t* pent);
 
 int main(int argc, char** argv)
 {
+        (void) argc;
+        (void) argv;
 
         uint32_t k, j, diff;
 
         uint32_t* pent = initPentagons(MAX);
+
+        if(!pent){
+                return -1;
+        }
 
         for(uint32_t a = 5; a < MAX; a++){
                 for(uint32_t b = 5; b < MAX; b++){
@@ -47,6 +53,7 @@ int main(int argc, char** argv)
         }
 
         done:
+                free(pent);
                 printf("%"PRIu32"\n", diff);
 
         return 0;
@@ -60,13 +67,14 @@ uint32_t* initPentagons(uint32_t limit)
         uint32_t* pent = malloc(limit * sizeof(uint32_t));
         
         if(!pent){
-                exit(1);
+                goto done;
         }
 
         for(uint32_t n = 0; n < limit; n++){
                 pent[n] = (n * (3*n - 1))/2;
         }
 
+done:
         return pent;
 
 }

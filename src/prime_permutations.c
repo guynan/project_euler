@@ -51,6 +51,8 @@ int main(int argc, char** argv)
 
         findArithmeticPrimes(primes, numPrimes);
 
+        free(primes);
+
         return 0;
 
 }

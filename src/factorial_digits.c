@@ -5,56 +5,55 @@
  * Answer: 40730
  * Project Euler: 34 */
 
-/* Includes */
 #include <stdio.h>
-#include <stdlib.h>
-
-/* Definitions */
+#include <stdint.h>
+#include <inttypes.h>
 
 /* Find way of not setting arbitrary num */
 #define MAX     1600000 
+static uint64_t facts[12];
 
-/* Prototypes */
-int main();
-long factorial(long f);
-int checkDigitFact(long i);
+uint64_t digit_factorial(uint64_t i);
+int main(int argc, char** argv);
+uint64_t factorial(uint64_t f);
 
 
-int main()
+int main(int argc, char** argv)
 {
-        long sum = 0;
+        uint64_t sum = 0;
 
-        for(long i = 5; i < MAX; i++ ){ 
-                sum += (checkDigitFact(i)) ? i : 0;
+        /* Cache the results of the factorial so the calculation is a lookup */
+        for(uint64_t i = 0; i < 10; i++){
+                facts[i] = factorial(i);
         }
 
-        printf("%li\n", sum);
+        for(uint64_t i = 5; i < MAX; i++ ){ 
+                sum += (i == digit_factorial(i)) ? i : 0;
+        }
+
+        printf("%"PRIu64"\n", sum);
 
 }
 
-
-long factorial(long f)
+uint64_t factorial(uint64_t f)
 {
-        long factorial = 1;
-
-        for(long i = 1; i != f+1; factorial *= i++)
+        uint64_t factorial = 1;
+        for(uint64_t i = 1; i != f+1; factorial *= i++)
                 ;
 
         return factorial;
 }
 
-int checkDigitFact(long i)
+/* Calculates the sum of the factorials of all the digits. I cheat by pulling
+ * the precalculated value from an array with all the answers. Sue me */
+uint64_t digit_factorial(uint64_t i)
 {
-        char *string = malloc(16 * sizeof(int));
+        uint64_t sum = 0; 
 
-        /* Cast num to string */
-        sprintf(string, "%li", i);
-        
-        int sum = 0; 
+        for( ; i; i /= 10){
+                sum += facts[i % 10];
+        }
 
-        for( ; *string; sum += factorial(*string++ - '0'))
-                ;
-                
-        return (sum == i);        
+        return sum;
 }
 

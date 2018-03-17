@@ -18,20 +18,19 @@
 #define STR     64
 
 /* Prototypes */
-int stringcmp(char *this, char *that);
 int isBinPalindrome(char *string);
 char *stringcpy(char *string);
 void stringrev(char *string);
-void strprint(char *string);
-int stringlen(char *this);
 int isPalindrome(int i);
 char *strrev(char *str);
 char *bin(int x);
-int len(int i);
-int main();
+int intrev(int i);
+int main(int argc, char** argv);
 
-int main()
+int main(int argc, char** argv)
 {
+        (void) argc;
+        (void) argv;
 
         int sum = 0;
 
@@ -45,33 +44,12 @@ int main()
 
 }
 
-/* Checks if it is a palindrome
- * through string manipulation */
 int isPalindrome(int i)
 {
         if(i < 10) return 1;
 
-        char *string = malloc(64 * sizeof(char));
-        sprintf(string, "%d", i);
-
-        char *reverse = stringcpy(string);
-        strrev(reverse);
-
-        return stringcmp(string, reverse);
+        return (i == intrev(i));
 }
-
-
-/* Checks the length of an integer */
-int len(int i)
-{
-        int a = 0; 
-        char *strcpy = malloc(STR * sizeof(char));
-        sprintf(strcpy, "%d", i);
-        for(; strcpy[a] != '\0'; a++);
-
-        return a;
-}
-
 
 /* Decimal to binary conversion */
 char *bin(int x)
@@ -91,51 +69,21 @@ char *bin(int x)
 }
 
 
-/* Print a string */
-void strprint(char *string)
-{
-        for( ; *string != '\0'; printf("%c", *string++));
-        printf("\n");
-}
-
-
-/* String comparison function to compare
- * both `this` and `that` */
-int stringcmp(char *this, char *that)
-{
-        for( ; *this != '\0'; ){
-                if(*this++ != *that++) return 0;
-        }
-
-        return (*that != '\0') ? 0 : 1;
-}
-
-
-int stringlen(char *this)
-{
-        int i;
-        for(i = 0; *this++ != '\0'; i++);
-
-        return i;
-}
-
-
 /* Argument has to be a `char *' to
  * preserve leading zeroes */
 int isBinPalindrome(char *string)
 {
-        char *reverse = stringcpy(string);
+        char* reverse = stringcpy(string);
 
         strrev(reverse); 
 
-        return stringcmp(string, reverse);
+        return 0 == strcmp(string, reverse);
 }
-
 
 /* Copies a string */
 char * stringcpy(char *string)
 {
-        char *copy = malloc(64 * sizeof(char));
+        char* copy = malloc(64 * sizeof(char));
 
         for(int i = 0; *string != '\0'; i++){
                 copy[i] = *string++;
@@ -160,3 +108,17 @@ char *strrev(char *str)
       }
       return str;
 }
+
+int intrev(int i)
+{
+        int rev = 0;
+        while(i){
+                rev *= 10;
+                rev += (i % 10);
+                i /= 10;
+        }
+
+        return rev;
+
+}
+

@@ -2,28 +2,29 @@
  * Project Euler: 1
  * Answer: 233168 */
 
-/* Includes */
 #include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
 
-/* Definitions */
-#define MAX     1000
 
-/* Prototypes */
-int main();
-int check(int i);
+#define MAX             1000
+#define MULT_3_5(i)     ((i) % 3 == 0 || (i) % 5 == 0)
 
-int main()
+
+int main(int argc, char** argv);
+
+
+int main(int argc, char** argv)
 {
-        register int i; int sum = 0;
+        (void) argc;
+        (void) argv;
 
-        for(i = 0; i< MAX; i++){
-                sum += (check(i)) ? i : 0;
+        uint64_t sum = 0;
+
+        for(uint64_t i = 0; i < MAX; i++){
+                sum += (MULT_3_5(i)) ? i : 0;
         }
 
-        printf("%d\n", sum);
+        printf("%"PRIu64"\n", sum);
 }
 
-int check(int i)
-{
-        return (i % 3 == 0 || i % 5 == 0);
-}

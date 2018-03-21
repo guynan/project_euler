@@ -3,26 +3,28 @@
  * Project Euler: 21
  * Answer: 31626 */
 
-/* Includes */
 #include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
 
-/* Definitions */
 #define MAX     10000
 
-/* Protoypes */
-int main();
-int isAmicable(int n);
+int main(int argc, char** argv);
+int isAmicable(uint64_t n);
 
 
-int main()
+int main(int argc, char** argv)
 {
-        int sum = 0;
+        (void) argc;
+        (void) argv;
 
-        for(int n = 1; n < MAX; n++){
+        uint64_t sum = 0;
+
+        for(uint64_t n = 1; n < MAX; n++){
                sum += (isAmicable(n)) ? n : 0;
         }
 
-        printf("%d\n", sum); 
+        printf("%"PRIu64"\n", sum); 
 
         return 0;
 
@@ -30,22 +32,26 @@ int main()
 
 
 /* Returns whether n is amicable */
-int isAmicable(int n)
+int isAmicable(uint64_t n)
 {
-        int sum = 0; int a;
-        int partner_sum = 0;
+        uint64_t sum = 0;
+        uint64_t i;
 
-        int k = n / 2 + 1;
+        uint64_t k = n / 2 + 1; 
 
         /* Find sum of factors of n*/
-        for(int i = 0; i < k; sum += (n % ++i == 0) ? i : 0);
+        for(i = 0; i < k; sum += (n % ++i == 0) ? i : 0)
+                ;
+
+        k = sum;
+        sum = 0;
 
         /* Find sum of factors of sum */
-        for(a = 1; a < sum; a++){
-                partner_sum += (sum % a == 0) ? a : 0;
-        }
+        for(i = 1; i < k; i++){
+                sum += (k % i == 0) ? i : 0;
+        } 
 
-        return (partner_sum == n && n != a);
+        return (sum == n && n != i);
 
 }
 

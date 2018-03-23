@@ -6,19 +6,21 @@ implicit none
         ! Functions defined here
         ! isprime, inc, intrev, is_palindrome
 
+        ! Constants
+
+        integer (kind=8), parameter :: ONE = 1
+
 contains
 
         ! This is here because I really miss the '+=' operator from C
         ! Operates on TWO instances of 64 bit numbers.
 
-        subroutine inc(base, offset)
+        pure subroutine inc(base, offset)
 
                 integer (kind=8), intent(out) :: base;
                 integer (kind=8), intent(in) :: offset;
-                integer (kind=8) :: tmp;
 
-                tmp = offset;
-                base = base + tmp;
+                base = base + offset;
 
                 return
 
@@ -27,7 +29,7 @@ contains
 
         ! Reverses a 64-bit integer
 
-        function intrev(x)
+        pure function intrev(x)
 
                 integer (kind=8), intent(in) :: x
                 integer (kind=8) :: intrev

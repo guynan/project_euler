@@ -26,16 +26,20 @@ implicit none
         outer: do a = 1, PERIMETER, 1
 
                 inner: do b = 1, PERIMETER, 1
+                        
+                        c = PERIMETER - (a + b)
 
-                        if(special_pythag(a, b)) then
+                        if(c <= 0) then
+                                exit inner
+                        endif
+
+                        if(pythag_triplet(a, b, c)) then
                                 exit outer
                         endif
 
                 end do inner
         
         end do outer
-
-        c = PERIMETER - (a + b)
 
         print*, a * b * c
 

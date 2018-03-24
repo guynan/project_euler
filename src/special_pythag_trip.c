@@ -10,46 +10,41 @@
  * Project Euler: 9 */
 
 #include <stdio.h>
+#include <stdint.h>
 #include <math.h>
 
-#define MAX     1000
+#define PERIMETER       1000
 
-/* Prototypes */
-int main();
-int ispythag(int a, int b, int c);
-int sumcheck(int a, int b, int c);
+int main(int argc, char** argv);
+int ispythag(uint64_t a, uint64_t b, uint64_t c);
 
-int main()
+int main(int argc, char** argv)
 {
-        int product = 0;
+        uint64_t a, b, c;
 
-        for(int a = 0; a <= MAX; a++){
-                for(int b = 0; b <= MAX; b++){
-                        for(int c = 0; c <= MAX; c++){
-                                if(sumcheck(a, b, c) && ispythag(a, b, c)){
-                                        product = a * b * c;
-                                        break; 
-                                }
+        for(a = 1; a < PERIMETER; a++){
+
+                for(b = 1; b < PERIMETER; b++){
+
+                        c = PERIMETER - (a + b);
+
+                        if(ispythag(a, b, c)){
+                                goto out;
                         }
 
-                        if(product != 0) break;
                 }
 
-                if(product != 0) break;
         }
+
+out:
        
-        printf("%d\n", product); 
+        printf("%d\n", a * b * c); 
 
         return 0;
 }
 
-int ispythag(int a, int b, int c)
+int ispythag(uint64_t a, uint64_t b, uint64_t c)
 {
         return (pow(a, 2) + pow(b, 2) == pow(c, 2));
 }
 
-int sumcheck(int a, int b, int c)
-{
-        return (a + b + c == MAX);
-}
-                

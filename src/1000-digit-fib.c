@@ -5,71 +5,79 @@
  * Answer: 4782 */
 
 
-/* Includes */
 #include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <inttypes.h>
 #include <stdlib.h>
 #include <gmp.h>
 
 
-/* FreeBSD : ln lib from /usr/local/lib to /usr/lib 
+/* FreeBSD : ln lib from /usr/local/lib to /usr/lib
  * && ln gmp.h from /usr/local/include to /usr/include */
 
 
-/* Definitions */
-#define MAX 1000
+#define MAX     1000
+#define BASE    10
 
 
-/* Prototypes */
-int main();
-int len(mpz_t i);
+int main(int argc, char** argv);
+size_t mpz_len(mpz_t i);
 
 
-int main()
+int main(int argc, char** argv)
 {
-        mpz_t first; mpz_t second; mpz_t term;
-        
-        /* So we can set our mpz_t to 1 */
-        unsigned long int one = 1;
 
-        mpz_init(first); mpz_init(second); mpz_init(term);
-          
+        (void) argc;
+        (void) argv;
+
+        mpz_t first, second, term;
+
+        mpz_init(first);
+        mpz_init(second);
+        mpz_init(term);
+
         /* Set these to one */
-        mpz_set_ui(first, one); mpz_set_ui(second, one);
+        mpz_set_ui(first, (uint64_t) 1);
+        mpz_set_ui(second, (uint64_t) 1);
 
         /* Index is 3 as we set first & second to 1 */
-        int index = 3;
+        uint64_t index = 3;
 
         for( ; ; index++){
-                
+
                 /* term = first + second */
                 mpz_add(term, first, second);
 
-                /* Set first = second 
+                /* Set first = second
                  * and second = term*/
                 mpz_set(first, second);
                 mpz_set(second, term);
-                
-                if(len(term) ==  MAX) break;
+
+                if(mpz_len(term) ==  MAX) break;
         }
 
-        printf("%d\n", index);
+        printf("%"PRIu64"\n", index);
+
+        /* Release resources from mpz allocations */
+        mpz_clears(first, second, term, NULL);
 
         return 0;
 
 }
 
 
-int len(mpz_t i)
+/* Find the length of a number in base `BASE` subsequently freeing the
+ * resources that gmp allocates */
+size_t mpz_len(mpz_t i)
 {
-        int a = 0;
-        char *strngcpy = malloc(MAX * sizeof(char));
-
         /* Cast to string to get length */
-        mpz_get_str(strngcpy, 10, i);
+        char* tmp = mpz_get_str(NULL, BASE, i);
 
-        for( ; *strngcpy++ != '\0'; a++)
-                ;
+        size_t len = strlen(tmp);
 
-        return a;
+        free(tmp);
+
+        return len;
 }
 

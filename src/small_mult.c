@@ -1,41 +1,42 @@
-/* Smallest positive number that is evenly 
+/* Smallest positive number that is evenly
  * divisible by all the numbers from 1 -> 20
  *
  * Answer: 232792560
  *
  * Project Euler: 5 */
 
-/* Includes */
 #include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
+
+#define DIVIS_CONST     20
+
+int evenly_divisible(uint32_t a, uint32_t max_divis);
+int main(int argc, char** argv);
 
 
-/* Prototypes */
-int isDivisible(long a);
-int main();
-
-
-int main()
+int main(int argc, char** argv)
 {
-        long int a;
+        uint32_t a;
 
-        for(a = 1; !(isDivisible(a)); a++);
+        for(a = 2; !(evenly_divisible(a, DIVIS_CONST)); a+= 2)
+                ;
 
-        printf("%li\n", a);
-                                
+        printf("%"PRIu32"\n", a);
+
         return 0;
 }
 
-int isDivisible(long a)
+
+int evenly_divisible(uint32_t a, uint32_t max_divis)
 {
+        for(int i = 2; i <= max_divis; i++){
 
-        for(int i = 1; i <= 20; i++){
-
-                if (a % i != 0) break;
-
-                if (i == 20) return 1;
+                if (a % i != 0){
+                        return 0;
+                }
         }
 
-        return 0;
-
+        return 1;
 }
 

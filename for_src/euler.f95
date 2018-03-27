@@ -93,7 +93,28 @@ contains
                 end do
 
         end function isprime
-        
+
+
+        ! Uses Euler's method for calculating the greatest common divisor
+
+        pure function gcd(a, b)
+
+                integer (kind=8), intent(in) :: a, b
+                integer (kind=8) :: gcd, tmp, y
+
+                gcd = a
+                y = b
+
+                ! Note could make gcd = x
+                do while(y /= 0)
+                        tmp = mod(gcd, y)
+                        gcd = y
+                        y = tmp
+
+                end do
+
+        end function gcd
+
 
 
 end module euler

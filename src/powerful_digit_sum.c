@@ -1,11 +1,11 @@
-/* A googol (10^100) is a massive number: 
+/* A googol (10^100) is a massive number:
  * one followed by one-hundred zeros;
- * 100^100 is almost unimaginably large: 
+ * 100^100 is almost unimaginably large:
  * one followed by two-hundred zeros.
- * Despite their size, the sum 
+ * Despite their size, the sum
  * of the digits in each number is only 1.
 
- * Considering natural numbers of the form, 
+ * Considering natural numbers of the form,
  * a^b, where a, b < 100, what is the
  * maximum digital sum?
  *
@@ -13,29 +13,29 @@
  * Project Euler: 56 */
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include <gmp.h>
 
 #define MAX     100
+#define BASE    10
 
-int main();
-int digitalSum(mpz_t i);
+int main(int argc, char** argv);
+uint64_t digitalSum(mpz_t i);
 
-int main()
+int main(int argc, char** argv)
 {
-        /* I get a feeling of comfort
-         * that the number will be easily
-         * truncatable and comparable to 
-         * the rest so I don't need to allocate
-         * the whole kitchen sink in terms of 
-         * memory. */
+        (void) argc;
+        (void) argv;
 
-        int max; int sum; mpz_t digit; 
+        mpz_t digit;
+        uint64_t max, sum;
 
-        mpz_init(digit); 
+        mpz_init(digit);
 
-        for(long a = 1 ; a <= MAX; a++){
-                for(long b = 1; b <= MAX; b++){
+        for(uint64_t a = 1 ; a <= MAX; a++){
+                for(uint64_t b = 1; b <= MAX; b++){
 
                         mpz_ui_pow_ui(digit, a, b);
                         sum = digitalSum(digit);
@@ -46,9 +46,9 @@ int main()
 
         }
 
-        printf("%d\n", max);
+        mpz_clear(digit);
 
-
+        printf("%"PRIu64"\n", max);
 
         return 0;
 
@@ -56,15 +56,14 @@ int main()
 
 
 /* Very simple cast to string; sum iteration */
-int digitalSum(mpz_t i)
+uint64_t digitalSum(mpz_t i)
 {
-        int sum = 0;
-        char *strptr = malloc(221 * sizeof(char));
+        uint64_t sum = 0;
+        char* str = mpz_get_str(NULL, BASE, i);
 
-        mpz_get_str(strptr, 10, i);
-
-        for( ; *strptr; sum += (*strptr++ - '0'))
+        for( ; *str != '\0'; sum += (*str++ - '0'))
                                 ;
+        free(str);
         return sum;
 }
 

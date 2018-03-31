@@ -19,25 +19,24 @@
  * Answer: 932718654 */
 
 
-/* Includes */
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdint.h>
 #include <inttypes.h>
 
 
-/* Definitions */
 #define MAX             9876
-#define PANDIGIT_STR    "123456789"
 #define MAX_DIGIT_LEN   9
+#define BASE            10
 
-/* Prototypes */
+
 uint32_t largestPandigitalProduct(uint32_t max);
-int compare(const void* a, const void* b);
 uint32_t concatMultiples(uint32_t i);
+uint32_t concat(uint32_t* ints);
 int main(int argc, char** argv);
-int isPandigital(const char* a);
+int isPandigital(uint32_t i);
+uint32_t pow10_g(uint32_t x);
+uint32_t intlen(uint32_t x);
 
 
 int main(int argc, char** argv)
@@ -52,26 +51,43 @@ int main(int argc, char** argv)
 }
 
 
-/* Does a simple ascii comparison such that qsort 
- * sorts the numbers relative to their numeric values */
-int compare(const void* a, const void* b)
+uint32_t pow10_g(uint32_t x)
 {
-        return (*((char*)a) > *((char*)b));
+        uint32_t ret = 10;
+
+        for(int i = 1; i < x; i++){
+                ret *= 10;
+        }
+        
+        return ret;
+
 }
 
 
-/* Checks whether a string is pandigital by sorting it,
- * and comparing it to a constant string which is pandigital */
-int isPandigital(const char* a)
+uint32_t intlen(uint32_t x)
 {
-        char* tmp = malloc((MAX_DIGIT_LEN + 1) * sizeof(char));
-        strncpy(tmp, a, (MAX_DIGIT_LEN + 1));
-        qsort(tmp, MAX_DIGIT_LEN, sizeof(char), compare);
+        uint32_t len = 0;
+        while(x){
+                x /= BASE;
+                len++;
+        }
 
-        int res = (0 == strcmp(tmp, PANDIGIT_STR));
-        free(tmp);
+        return len;
 
-        return res;
+}
+
+
+uint32_t concat(uint32_t* ints)
+{
+        int concat = *ints++;
+
+        while(*ints){
+                concat *= pow10_g(intlen(*ints));
+                concat += *ints++;
+        }
+
+        return concat;
+
 }
 
 
@@ -91,39 +107,63 @@ uint32_t largestPandigitalProduct(const uint32_t max)
 
 uint32_t concatMultiples(uint32_t i)
 {
+        uint32_t cat = i;
 
-        char* prev = NULL;
+        for(uint32_t j = 2; ; j++){
 
-        for(uint32_t j = 1; ; j++){
+                uint32_t ints[2] = {cat, j * i};
+                cat = concat(ints);
 
-                /* Needs to accomodate at most 2x */
-                char* tmp = malloc(2  * MAX_DIGIT_LEN * sizeof(char));
-
-                sprintf(tmp, "%" PRIu32, i * j);
-
-                if(prev){
-                        strncat(prev, tmp, MAX_DIGIT_LEN);
-                        free(tmp);
-                        tmp = prev;
-                } 
-
-                uint32_t length = strnlen(tmp, 10);
+                uint32_t length = intlen(cat);
 
                 if(length > MAX_DIGIT_LEN){
-                        free(tmp);
-                        return 0;
+                        cat = 0;
+                        goto out;
                 }
                 
-                if(length == MAX_DIGIT_LEN && isPandigital(tmp)){
-                        uint32_t k = strtol(tmp, NULL, MAX_DIGIT_LEN + 1);
-                        free(tmp);
-                        return k;
+                if(length == MAX_DIGIT_LEN && isPandigital(cat)){
+                        goto out;
                 }
-
-                prev = tmp;
 
         }
 
+out:
+
+        return cat;
+
+
+}
+
+
+int isPandigital(uint32_t i)
+{
+        uint32_t* pan = NULL;
+
+        pan = calloc(BASE, sizeof(uint32_t));
+
+        for( ; i; i /= BASE){
+                (pan[i % BASE])++;
+        }
+
+
+        /* At this point, for a number to be pandigital, all numbers in this
+         * array must be set to 1. We know we get zeroed memory too. `i` is now
+         * zero which is useful so we don't need to introduce another var */
+        for(i = 1 ; i < 10; i++){
+
+                if(pan[i] != 1){
+                        i = 0;
+                        goto out;
+                }
+        }
+
+        i = 1;
+        
+out:
+
+        free(pan);
+
+        return i;
 
 }
 

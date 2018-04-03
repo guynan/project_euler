@@ -46,6 +46,9 @@ lycherl_num:
 mult_3_5:
 	$(CC) $(FLAGS) mult_3_5.f95
 
+pandigit_prime:: $(OUT)
+	$(CC) $(FLAGS) pandigit_prime.f95 $(OUT)
+
 reversible_numbers: $(OUT)
 	$(CC) $(FLAGS) reversible_numbers.f95 $(OUT)
 

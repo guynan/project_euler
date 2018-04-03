@@ -144,6 +144,8 @@ contains
                         return
                 endif
 
+                intlen = 0
+
                 do while(tmp /= 0)
                         tmp = tmp / 10;
                         call inc(intlen, ONE);

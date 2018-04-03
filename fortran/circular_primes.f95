@@ -79,7 +79,7 @@ contains
                         return
                 endif
 
-                circulate = (mod(i, BASE) * BASE ** (intlen(i) - 1) + i) / BASE
+                circulate = (mod(i, BASE) * BASE ** (intlen(i)) + i) / BASE
 
         end function circulate
 

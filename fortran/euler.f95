@@ -27,6 +27,18 @@ contains
         end subroutine inc
 
 
+        ! This subroutine is borne out of convenience for the native print
+        ! method is usually overkill when one wishes to print an integer
+
+        subroutine printint(i)
+                
+                integer (kind=8), intent(in) :: i
+
+                write (*, '(I0)') i;
+
+        end subroutine printint
+
+
         ! Reverses a 64-bit integer
 
         pure function intrev(x)

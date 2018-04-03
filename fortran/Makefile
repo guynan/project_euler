@@ -37,6 +37,9 @@ even_fib:
 factorial_digits: $(OUT)
 	$(CC) $(FLAGS) factorial_digits.f95 $(OUT)
 
+largest_palindrome: $(OUT)
+	$(CC) $(FLAGS) largest_palindrome.f95 $(OUT)
+
 largest_prime_factor:
 	$(CC) $(FLAGS) largest_prime_factor.f95
 

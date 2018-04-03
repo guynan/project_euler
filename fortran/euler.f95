@@ -78,10 +78,11 @@ contains
         end function is_palindrome
 
 
-        function isprime (s)
+        pure function isprime (s)
 
                 logical :: isprime
-                integer (kind=8) :: s, i, top
+                integer (kind=8), intent(in) :: s
+                integer (kind=8) :: i, top
 
                 isprime = .false.  
 
@@ -127,6 +128,28 @@ contains
 
         end function gcd
 
+
+        ! Get the length of the digit as if it were a string
+
+        pure function intlen(i)
+
+                integer (kind=8), intent(in) :: i;
+                integer (kind=8) :: intlen, tmp;
+
+                intlen = 1;
+                tmp = i;
+
+                ! Else len will be 2
+                if(i < 10) then
+                        return
+                endif
+
+                do while(tmp /= 0)
+                        tmp = tmp / 10;
+                        call inc(intlen, ONE);
+                end do
+
+        end function intlen
 
 
 end module euler

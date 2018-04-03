@@ -25,6 +25,9 @@ euler.o:
 amicable_number:
 	$(CC) $(FLAGS) amicable_number.f95
 
+circular_primes: $(OUT)
+	$(CC) $(FLAGS) circular_primes.f95 $(OUT)
+
 divis_tri_number:
 	$(CC) $(FLAGS) divis_tri_number.f95
 

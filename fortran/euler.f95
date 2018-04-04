@@ -1,6 +1,8 @@
 
 module euler
 
+use ISO_FORTRAN_ENV
+
 implicit none
 
         ! Functions defined here
@@ -9,6 +11,8 @@ implicit none
         ! Constants
 
         integer (kind=8), parameter :: ONE = 1
+
+        integer (kind=8), parameter :: i64 = selected_int_kind(16);
 
 contains
 

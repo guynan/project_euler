@@ -9,11 +9,12 @@ implicit none
         ! Functions defined here
         ! isprime, inc, intrev, is_palindrome
 
-        ! Constants
+! Constants
 
+        ! Purely a construction of convenience
         integer (int64), parameter :: ONE = 1
 
-        ! Integer kind specifiers
+! Integer kind specifiers
 
         integer (int64), parameter :: i8 = INT8;
         integer (int64), parameter :: i16 = INT16;
@@ -21,11 +22,22 @@ implicit none
         integer (int64), parameter :: i64 = INT64;
         integer (int64), parameter :: i128 = C_INT128_T;
 
-        ! Interfaces
+! Interfaces
 
+        ! Immeadiate addition
         interface inc
                 module procedure inc_64, inc_128
         end interface inc
+
+        ! Immeadiate division
+        interface idiv
+                module procedure idiv_64, idiv_128
+        end interface idiv
+
+        ! Immeadiate Multiplication
+        interface imult
+                module procedure imult_64, imult_128
+        end interface imult
 
         interface intlen
                 module procedure intlen_64, intlen_128
@@ -42,7 +54,6 @@ contains
                 integer (int64), intent(in) :: offset;
 
                 base = base + offset;
-
                 return
 
         end subroutine inc_64
@@ -54,10 +65,57 @@ contains
                 integer (kind=C_INT128_T), intent(in) :: offset;
 
                 base = base + offset;
-
                 return
 
         end subroutine inc_128
+
+
+        ! Division immediate; base /= offset;
+
+        pure subroutine idiv_64(base, offset)
+
+                integer (int64), intent(out) :: base;
+                integer (int64), intent(in) :: offset;
+
+                base = base / offset;
+                return
+
+        end subroutine idiv_64
+
+
+        pure subroutine idiv_128(base, offset)
+
+                integer (kind=C_INT128_T), intent(out) :: base;
+                integer (kind=C_INT128_T), intent(in) :: offset;
+
+                base = base / offset;
+                return
+
+        end subroutine idiv_128
+
+
+        ! Multiplication immeadiate; base *= offset
+
+        pure subroutine imult_64(base, offset)
+
+                integer (int64), intent(out) :: base;
+                integer (int64), intent(in) :: offset;
+
+                base = base * offset;
+                return
+
+        end subroutine imult_64
+
+
+        pure subroutine imult_128(base, offset)
+
+                integer (kind=C_INT128_T), intent(out) :: base;
+                integer (kind=C_INT128_T), intent(in) :: offset;
+
+                base = base * offset;
+                return
+
+        end subroutine imult_128
 
 
         ! This subroutine is borne out of convenience for the native print
@@ -66,7 +124,6 @@ contains
         subroutine printint(i)
                 
                 integer (int64), intent(in) :: i
-
                 write (*, '(I0)') i;
 
         end subroutine printint
@@ -111,11 +168,13 @@ contains
         end function is_palindrome
 
 
+        ! Brute force approach to distinguishing primes
+
         pure function isprime (s)
 
-                logical :: isprime
                 integer (int64), intent(in) :: s
                 integer (int64) :: i, top
+                logical :: isprime
 
                 isprime = .false.  
 
@@ -123,20 +182,19 @@ contains
                         return
                 endif
 
-                top = int(sqrt(real(s))) + 1
+                top = int(sqrt(real(s)));
 
-                do i = 2, top + 1, 1
-
-                        if (i == top) then
-                                isprime = .true.
-                                exit
-                        end if
+                do i = 2, top , 1
 
                         if(mod(s, i) == 0) then
-                                exit
+                                return;
                         end if
 
                 end do
+
+                isprime = .true.
+
+                return
 
         end function isprime
 
@@ -161,6 +219,7 @@ contains
 
         end function gcd
 
+
         ! Get the length of the digit as if it were a string
 
         pure function intlen_64(i)
@@ -172,7 +231,7 @@ contains
                 tmp = i;
 
                 do while(tmp >= 10)
-                        tmp = tmp / 10;
+                        call idiv(tmp, 10_int64);
                         call inc(intlen_64, 1_i64);
                 end do
 
@@ -188,7 +247,7 @@ contains
                 tmp = i;
 
                 do while(tmp >= 10)
-                        tmp = tmp / 10;
+                        call idiv(tmp, 10_i128);
                         call inc(intlen_128, 1_i128);
                 end do
 

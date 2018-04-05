@@ -5,6 +5,7 @@ program even_fib
 
         integer :: first, second, tmp, maximum, sumx
 
+        sumx = 0
         first = 1
         second = 1
         maximum = 4000000

@@ -1,7 +1,8 @@
 
 module euler
 
-use ISO_FORTRAN_ENV
+        use ISO_FORTRAN_ENV
+        use ISO_C_BINDING
 
 implicit none
 
@@ -10,25 +11,53 @@ implicit none
 
         ! Constants
 
-        integer (kind=8), parameter :: ONE = 1
+        integer (int64), parameter :: ONE = 1
 
-        integer (kind=8), parameter :: i64 = selected_int_kind(16);
+        ! Integer kind specifiers
+
+        integer (int64), parameter :: i8 = INT8;
+        integer (int64), parameter :: i16 = INT16;
+        integer (int64), parameter :: i32 = INT32;
+        integer (int64), parameter :: i64 = INT64;
+        integer (int64), parameter :: i128 = C_INT128_T;
+
+        ! Interfaces
+
+        interface inc
+                module procedure inc_64, inc_128
+        end interface inc
+
+        interface intlen
+                module procedure intlen_64, intlen_128
+        end interface intlen
 
 contains
 
         ! This is here because I really miss the '+=' operator from C
         ! Operates on TWO instances of 64 bit numbers.
 
-        pure subroutine inc(base, offset)
+        pure subroutine inc_64(base, offset)
 
-                integer (kind=8), intent(out) :: base;
-                integer (kind=8), intent(in) :: offset;
+                integer (int64), intent(out) :: base;
+                integer (int64), intent(in) :: offset;
 
                 base = base + offset;
 
                 return
 
-        end subroutine inc
+        end subroutine inc_64
+
+
+        pure subroutine inc_128(base, offset)
+
+                integer (kind=C_INT128_T), intent(out) :: base;
+                integer (kind=C_INT128_T), intent(in) :: offset;
+
+                base = base + offset;
+
+                return
+
+        end subroutine inc_128
 
 
         ! This subroutine is borne out of convenience for the native print
@@ -36,7 +65,7 @@ contains
 
         subroutine printint(i)
                 
-                integer (kind=8), intent(in) :: i
+                integer (int64), intent(in) :: i
 
                 write (*, '(I0)') i;
 
@@ -47,9 +76,9 @@ contains
 
         pure function intrev(x)
 
-                integer (kind=8), intent(in) :: x
-                integer (kind=8) :: intrev
-                integer (kind=8) :: tmp
+                integer (int64), intent(in) :: x
+                integer (int64) :: intrev
+                integer (int64) :: tmp
                 
                 intrev  = 0
                 tmp = x;
@@ -70,8 +99,8 @@ contains
 
         function is_palindrome(x)
 
-                integer (kind=8), intent(in) :: x;
-                integer (kind=8) :: tmp;
+                integer (int64), intent(in) :: x;
+                integer (int64) :: tmp;
                 logical :: is_palindrome;
 
                 tmp = x;
@@ -85,8 +114,8 @@ contains
         pure function isprime (s)
 
                 logical :: isprime
-                integer (kind=8), intent(in) :: s
-                integer (kind=8) :: i, top
+                integer (int64), intent(in) :: s
+                integer (int64) :: i, top
 
                 isprime = .false.  
 
@@ -116,8 +145,8 @@ contains
 
         pure function gcd(a, b)
 
-                integer (kind=8), intent(in) :: a, b
-                integer (kind=8) :: gcd, tmp, y
+                integer (int64), intent(in) :: a, b
+                integer (int64) :: gcd, tmp, y
 
                 gcd = a
                 y = b
@@ -132,30 +161,38 @@ contains
 
         end function gcd
 
-
         ! Get the length of the digit as if it were a string
 
-        pure function intlen(i)
+        pure function intlen_64(i)
 
-                integer (kind=8), intent(in) :: i;
-                integer (kind=8) :: intlen, tmp;
+                integer (int64), intent(in) :: i;
+                integer (int64) :: intlen_64, tmp;
 
-                intlen = 1;
+                intlen_64 = 1;
                 tmp = i;
 
-                ! Else len will be 2
-                if(i < 10) then
-                        return
-                endif
-
-                intlen = 0
-
-                do while(tmp /= 0)
+                do while(tmp >= 10)
                         tmp = tmp / 10;
-                        call inc(intlen, ONE);
+                        call inc(intlen_64, 1_i64);
                 end do
 
-        end function intlen
+        end function intlen_64
+
+
+        pure function intlen_128(i)
+
+                integer (kind=C_INT128_T), intent(in) :: i;
+                integer (kind=C_INT128_T) :: intlen_128, tmp;
+
+                intlen_128= 1;
+                tmp = i;
+
+                do while(tmp >= 10)
+                        tmp = tmp / 10;
+                        call inc(intlen_128, 1_i128);
+                end do
+
+        end function intlen_128
 
 
 end module euler

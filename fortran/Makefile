@@ -23,8 +23,8 @@ euler.o:
 10001st_prime: $(OUT)
 	$(CC) $(FLAGS) $(OPT_LEVEL) 10001st_prime.f95 $(OUT)
 
-amicable_number:
-	$(CC) $(FLAGS) $(OPT_LEVEL) amicable_number.f95
+amicable_num:
+	$(CC) $(FLAGS) $(OPT_LEVEL) amicable_num.f95
 
 circular_primes: $(OUT)
 	$(CC) $(FLAGS) $(OPT_LEVEL) circular_primes.f95 $(OUT)
@@ -41,14 +41,17 @@ factorial_digits: $(OUT)
 largest_palindrome: $(OUT)
 	$(CC) $(FLAGS) $(OPT_LEVEL) largest_palindrome.f95 $(OUT)
 
-largest_prime_factor:
-	$(CC) $(FLAGS) $(OPT_LEVEL) largest_prime_factor.f95
+largest_prime_factor: $(OUT)
+	$(CC) $(FLAGS) $(OPT_LEVEL) largest_prime_factor.f95 $(OUT)
 
 lycherl_num:
 	$(CC) $(FLAGS) $(OPT_LEVEL) lycherl_num.f95
 
 mult_3_5:
 	$(CC) $(FLAGS) $(OPT_LEVEL) mult_3_5.f95
+
+non_abundant_sums:
+	$(CC) $(FLAGS) $(OPT_LEVEL) non_abundant_sums.f95
 
 pandigit_prime:: $(OUT)
 	$(CC) $(FLAGS) $(OPT_LEVEL) pandigit_prime.f95 $(OUT)

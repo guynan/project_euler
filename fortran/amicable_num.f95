@@ -5,7 +5,6 @@ program main
 implicit none
 
 
-        integer, parameter :: ONE = 1
         integer, parameter :: MAXIMUM = 10000
         integer :: sumn, n
 

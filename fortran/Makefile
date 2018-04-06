@@ -38,6 +38,9 @@ even_fib:
 factorial_digits: $(OUT)
 	$(CC) $(FLAGS) $(OPT_LEVEL) factorial_digits.f95 $(OUT)
 
+integer_right_triangles:
+	$(CC) $(FLAGS) $(OPT_LEVEL) integer_right_triangles.f95 $(OUT)
+
 largest_palindrome: $(OUT)
 	$(CC) $(FLAGS) $(OPT_LEVEL) largest_palindrome.f95 $(OUT)
 

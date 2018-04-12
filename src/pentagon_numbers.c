@@ -1,5 +1,5 @@
 /* Find the pair of pentagonal numbers
- * for which their sum and difference are 
+ * for which their sum and difference are
  * pentagonal. What is the value of their
  * difference?
 
@@ -9,17 +9,16 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include <stdlib.h>
+#include <math.h>
 #include <inttypes.h>
 
 
-/* Should be less than 10000 */
-#define MAX     3000
+#define PENT(x)         ((3* (x)*(x) - (x))/2)
 
-/* Prototypes */
+
 int main(int argc, char** argv);
-uint32_t* initPentagons(uint32_t limit);
-int isPentagonal(uint32_t n, uint32_t* pent);
+int isPentagonal(uint32_t x);
+int perfect_square(uint32_t n);
 
 
 int main(int argc, char** argv)
@@ -27,72 +26,46 @@ int main(int argc, char** argv)
         (void) argc;
         (void) argv;
 
-        uint32_t k, j, diff;
+        uint32_t pb, pa;
 
-        uint32_t* pent = initPentagons(MAX);
+        for(uint32_t a = 5; ; a++){
+                pa = PENT(a);
 
-        if(!pent){
-                return -1;
-        }
+                for(uint32_t b = 5; b < a; b++){
+                        pb = PENT(b);
 
-        for(uint32_t a = 5; a < MAX; a++){
-                for(uint32_t b = 5; b < MAX; b++){
-                                
-                        if(a == b) break;
-
-                        k = pent[a];
-                        j = pent[b];
-                        
-                        diff = k - j;
-
-                        if(isPentagonal(k + j, (pent + a)) && isPentagonal(diff, pent)){
+                        if(isPentagonal(pa-pb) && isPentagonal(pa+pb)){
                                 goto done;
                         }
                 }
 
         }
 
-        done:
-                free(pent);
-                printf("%"PRIu32"\n", diff);
+done:
+        printf("%"PRIu32"\n", pa-pb);
 
         return 0;
 
 }
 
 
-/* Initialise array of pentagonal numbers */
-uint32_t* initPentagons(uint32_t limit)
-{
-        uint32_t* pent = malloc(limit * sizeof(uint32_t));
-        
-        if(!pent){
-                goto done;
-        }
-
-        for(uint32_t n = 0; n < limit; n++){
-                pent[n] = (n * (3*n - 1))/2;
-        }
-
-done:
-        return pent;
-
-}
 
 /* Asks if is pentagonal by
  * iterating over the pentagon array */
-int isPentagonal(uint32_t n, uint32_t* pent)
+int isPentagonal(uint32_t x)
 {
-        
-        for(uint32_t i = 0; i < MAX; i++){
+        uint32_t tmp = 24 * x + 1;
 
-                if(n == pent[i]) return 1;
-
-                if(n < pent[i]) return 0;
-
-        }
-
-        return 0;
-
+        return (perfect_square(tmp) &&
+                (uint32_t) sqrt((double) tmp) % 6 == 5);
 }
+
+
+int perfect_square(uint32_t n)
+{
+        uint32_t tmp = (uint32_t) sqrt((double) n);
+        return ((tmp * tmp) == n);
+}
+
+
 

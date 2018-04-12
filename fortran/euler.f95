@@ -254,5 +254,19 @@ contains
         end function intlen_128
 
 
+        ! Checks if there is a natural result of the square root
+
+        pure function perfect_square(x)
+
+                integer (int64), intent(in) :: x;
+                integer (int64) :: tmp;
+                logical :: perfect_square;
+
+                tmp = int(sqrt(real(x)));
+                perfect_square = ((tmp * tmp) == x);
+
+        end function perfect_square
+
+
 end module euler
 

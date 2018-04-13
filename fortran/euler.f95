@@ -7,12 +7,13 @@ module euler
 implicit none
 
         ! Functions defined here
-        ! isprime, inc, intrev, is_palindrome
+        ! isprime, inc, intrev, is_palindrome, is_natural
 
 ! Constants
 
         ! Purely a construction of convenience
         integer (int64), parameter :: ONE = 1
+        real, parameter :: NATURAL_THRESHOLD = 0.0005;
 
 ! Integer kind specifiers
 
@@ -266,6 +267,21 @@ contains
                 perfect_square = ((tmp * tmp) == x);
 
         end function perfect_square
+
+
+        ! This is an immensely dirty way of checking whether a number is
+        ! natural. This works by seeing whether the decimal part of the number
+        ! is less than the NATURAL_THRESHOLD which is somwhat arbitrarily
+        ! defined as about 0.0005. Works, but isn't pretty
+
+        pure function is_natural(x)
+
+                real, intent(in) :: x;
+                logical :: is_natural;
+
+                is_natural = (abs(x - real(nint(x))) < NATURAL_THRESHOLD);
+
+        end function is_natural
 
 
 end module euler

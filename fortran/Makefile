@@ -74,6 +74,9 @@ sub_string_divis: $(OUT)
 summation_primes: $(OUT)
 	$(CC) $(FLAGS) $(OPT_LEVEL) summation_primes.f95 $(OUT)
 
+tri_pent_hex: $(OUT)
+	$(CC) $(FLAGS) $(OPT_LEVEL) tri_pent_hex.f95 $(OUT)
+
 clean:
 	rm -rf *.mod *.o a.out
 

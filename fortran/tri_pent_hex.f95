@@ -23,7 +23,7 @@ use euler
 implicit none
 
 
-        integer (int64), parameter :: START = 285 + 1;
+        integer (int64), parameter :: START = 40755;
         integer (int64) :: n, tri;
 
         n = START;
@@ -34,14 +34,12 @@ implicit none
                 call triangle(tri);
 
                 if(pentagonal(tri) .AND. hexagonal(tri)) then
-                        goto 24;
+                        exit
                 endif
 
                 call inc(n, 1_int64);
 
         end do
-
-24      CONTINUE
 
         call printint(tri);
 
@@ -79,19 +77,13 @@ contains
         pure function hexagonal(x)
 
                 integer (int64), intent(in) :: x;
-                integer (int64) :: tmp;
                 logical :: hexagonal;
+                real :: tmp;
+
+                tmp = (sqrt(real(8 * x + 1)) + 1) / 4;
+                hexagonal = is_natural(tmp)
 
         end function hexagonal
-
-        pure function is_natural(x)
-
-                integer (int64), intent(in) :: x;
-                logical :: is_
-
-                return (abs(x - nint(x)) < 0.0005)
-
-        end function is_natural
 
 
 end program main

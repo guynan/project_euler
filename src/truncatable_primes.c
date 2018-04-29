@@ -1,247 +1,159 @@
-/* The number 3797 has an interesting property. 
+
+/* The number 3797 has an interesting property.
  * Being prime itself, it is possible
- * to continuously remove digits from left to right, 
+ * to continuously remove digits from left to right,
  * and remain prime at each stage: 3797, 797, 97, and 7.
  * Similarly we can work from right to left: 3797, 379, 37, and 3.
 
- * Find the sum of the only eleven primes that are 
+ * Find the sum of the only eleven primes that are
  * both truncatable from left to right and right to left.
 
- * NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes. 
+ * NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.
 
- * Answer: 748317 
+ * Answer: 748317
  * Project Euler: 37 */
 
 
-/* Includes */
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
+#include <inttypes.h>
 #include <math.h>
 
 
-/* Definitions */
-#define MAX             750000
 #define BASE            10
-static int primes[80000];
-static int res[12];
-static int primesum = 0;
-static int primec = 0;
+#define TRUNC_PRIME_N   11
 
 
-/* Function Prototypes */
-int truncateLeft(int i);
-uint32_t intrev(uint32_t i);
-int truncateRight(int i);
-int trueLeft(int prime);
-int trueRight(int prime);
-int isPrime(unsigned int s);
-void initPrimes();
-int inPrimes(int i);
-int in(int i, int res[]);
-int justifyParent(int prime);
-int strtoint(char *string);
+int32_t intrev(int32_t i);
+int left_trunc(int32_t prime);
+int truncatable_prime(int32_t i);
+int right_trunc(int prime);
+int isPrime(int32_t s);
+int possibly_trunc(int32_t i);
 int main(int argc, char** argv);
+
+
+static int32_t c = 0;
+static int32_t sum = 0;
 
 
 int main(int argc, char** argv)
 {
-        register int prime;
 
-	initPrimes();
+        (void) argc;
+        (void) argv;
 
-        for(int i = 0; primec != 11 ; i++){
+        for(int32_t i = 1; ; i += 2){
 
-                prime = primes[i];
+                if(truncatable_prime(i)){
 
-                if(trueLeft(prime) && trueRight(prime)){
-                        primesum += prime;
-                        primec++;
+                        sum += i;
+
+                        if(++c == TRUNC_PRIME_N){
+                                break;
+                        }
                 }
-
         }
 
-        printf("%d\n", primesum);
+        printf("%"PRId32"\n", sum);
 
         return 0;
 
 }
 
 
-int trueLeft(int prime)
+int truncatable_prime(int32_t i)
 {
-        int left;
+        return !(i < 10 || !possibly_trunc(i)) &&
+                (right_trunc(i) && left_trunc(i));
+}
 
-        if (prime < 10) return 0; 
 
-        left = truncateLeft(prime);
+int left_trunc(int32_t left)
+{
+        for( ; left; left = intrev(intrev(left) / BASE)){
 
-        for( ; left > 10; left = truncateLeft(left)){
-
-                if(!inPrimes(left)) return 0;
-
+                if(!isPrime(left))
+                        return 0;
         }
 
-        left = truncateLeft(left);
-
-        if(inPrimes(left)) return 1;
-
-        return 0;
+        return 1;
 
 }
 
 
-int trueRight(int prime)
+int right_trunc(int32_t right)
 {
-        int right; 
+        for( ; right; right /= BASE){
 
-        if (prime < 10) return 0; 
-
-        right = truncateRight(prime);
-
-        for( ; right > 10; right = truncateRight(right)){
-
-                if(!inPrimes(right)) return 0;
-                        
+                if(!isPrime(right))
+                        return 0;
         }
 
-        right = truncateLeft(right);
-
-        if(inPrimes(right)) return 1;
-                
-        return 0;
+        return 1;
 }
 
 
-/* Converting to a string and then
- * removing one character from the left 
- * of the string */
-int truncateLeft(int i)
+int isPrime(int32_t s)
 {
-        if(i < 10) return i; 
-        
-        return intrev(intrev(i) / 10);
-}
+        if (s < 2)
+                return 0;
 
+        int32_t top = (int32_t) round((double) sqrt(s));
 
-/* Initially check to see if it is worth
- * converting to a string and then move from
- * the right of the string and return the int */
-int truncateRight(int i)
-{
-        if(i < 10) return i;
-                
-        return i / 10;
-}
+        for(int32_t i = 2; i <= top; i++){
 
-
-/* Convert a string to a decimal integer */
-int strtoint(char *string)
-{
-        int dec;
-
-        for(dec = 0; *string; ){
-                dec = dec * 10 + (*string++ - '0');
+                if (s % i == 0)
+                        return 0;
         }
 
-        return dec;
-}
-
-/* Generates a list of primes up to MAX */
-void initPrimes()
-{
-        int count = 0;
-
-        for(int i = 0; i < MAX; i++){
-                if(isPrime(i)) primes[count++] = i;
-        }
-}
-
-        
-/* This checks to see if `i` is
- * in the list of generated primes */
-int inPrimes(int i)
-{
-        int *p = primes;
-
-        while(*p){
-                if(i == *p) return 1;
-                if(i < *p++) return 0;
-        }
-
-        return 0;
+        return 1;
 }
 
 
-/* Checks if an integer is a prime
- * in the most efficient way I know */
-int isPrime(unsigned int s)
+int32_t intrev(int32_t i)
 {
-        if (s == 0 || s == 1) return 0;
-
-        if (s == 2) return 1;
-
-        /* Hopefully preventing rounding errors */
-        int top = (int) round(sqrt(s) +1 );
-
-        for(int i = 2; i < top+1; i++){
-
-                if(i == top) return 1;
-
-                if (s % i == 0) return 0;
-                        
-        }
-
-        return 0;
-}
-
-
-/* Checks for i in the array res; if it 
- * finds it then it returns the index in the
- * array; if not, returns -1. */
-int in(int i, int *res)
-{
-        for(int c = 0; *res != '\0'; c++){
-                        
-                if(*(res + c) == i) return c;
-        }
-
-        return -1;
-
-}
-
-/* Returns true if we had to justify the
- * parent in the res array */
-int justifyParent(int prime)
-{
-        int left, index;
-
-        left = truncateLeft(prime);
-        index = in(left, res);
-
-        /* Here we are checking if a child truncatable
-         * prime has been added to the list. If it has
-         * been, we replace it with the parent trunc. prime */
-        if(index != -1){
-                res[index] = prime;
-                return 1;
-        }
-
-        return 0;
-
-}
-
-uint32_t intrev(uint32_t i)
-{
-        uint32_t rev = 0;
-        uint32_t rem;
+        int32_t rev = 0;
 
         while(i){
-                rem = i % BASE;
                 rev *= BASE;
-                rev += rem;
+                rev += (i % BASE);
                 i /= BASE;
         }
 
         return rev;
 }
+
+
+/* Rule out numbers with any even integers *except two*, rule out any numbers
+ * with more than one two, and rule out any numbers that don't end in 3 || 7 */
+int possibly_trunc(int32_t i)
+{
+        int32_t end;
+        int32_t has_2 = 0;
+
+        end = i % BASE;
+
+        if(end != 7 && end != 3)
+                return 0;
+
+        for( ; i; i /= BASE){
+                end = (i % BASE);
+
+                if(end % 2 == 0){
+
+                        if(end == 2){
+                                if(has_2++)
+                                        return 0;
+
+                        } else {
+                                return 0;
+                        }
+
+                }
+        }
+
+        return 1;
+
+}
+

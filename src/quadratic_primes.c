@@ -58,12 +58,12 @@ int main(int argc, char** argv)
 /* Detects whether int is prime */
 int isPrime(int32_t s)
 {
-        if (s < 2)
-                return 0;
+        if (s < 2 || s == 2 || s % 2 == 0)
+                return (s == 2);
 
-        int32_t top = (int32_t) round((float) sqrt(s));
+        int32_t top = (int32_t) round((double) sqrt(s));
 
-        for(int32_t i = 2; i <= top; i++){
+        for(int32_t i = 3; i <= top; i += 2){
 
                 if (s % i == 0)
                         return 0;

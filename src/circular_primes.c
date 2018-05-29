@@ -54,12 +54,12 @@ int main(int argc, char** argv)
  * in the most efficient way I know */
 int isPrime(uint32_t s)
 {
-        if (s < 2)
-                return 0;
+        if (s < 2 || s == 2 || s % 2 == 0)
+                return (s == 2);
 
-        uint32_t top = (uint32_t) round((double) sqrt(s));
+        uint32_t top = (uint32_t) round((float) sqrt(s));
 
-        for(uint32_t i = 2; i <= top; i++){
+        for(uint32_t i = 3; i <= top; i+=2){
 
                 if (s % i == 0)
                         return 0;

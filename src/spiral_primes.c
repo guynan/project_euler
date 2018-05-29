@@ -79,12 +79,12 @@ int main(int argc, char** argv)
 
 int is_prime(int64_t s)
 {
-        if (s < 2)
-                return 0;
+        if (s < 2 || s == 2 || s % 2 == 0)
+                return (s == 2);
 
         int64_t top = (int64_t) round((double) sqrt(s));
 
-        for(int64_t i = 2; i <= top; i++){
+        for(int64_t i = 3; i <= top; i += 2){
 
                 if (s % i == 0)
                         return 0;

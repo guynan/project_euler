@@ -22,54 +22,59 @@
 #include <stdint.h>
 
 
-/* YEP THIS ONE IS FUCKED */
-
-
-#define MAX     100000
-//#define MAX     8
+#define MAX     1000000
 
 static const double three_sevenths = 3.0 / 7.0;
-static const double two_sevenths = 2.0 / 7.0;
 
 struct frac {
-        uint64_t n;
-        uint64_t d;
+        int32_t n;
+        int32_t d;
+        double fp;
 };
 
-
-uint64_t gcd(uint64_t a, uint64_t b);
+int32_t gcd(int32_t a, int32_t b);
 int main(int argc, char** argv);
 
 
 int main(int argc, char** argv)
 {
-        
-        /* Attempting this in a very naive way */
+        (void) argc;
+        (void) argv;
 
-        uint64_t count = 0;
+        struct frac left = {2, 7, (double) 2.0/7.0};
 
-        for(uint64_t n = 1; n < MAX; n++){
-                for(uint64_t d = 1; d < MAX; d++){
-                        if(d <= n)
-                                continue;
+        for(int32_t n = 4; n < MAX; n++){
 
-                        if((double) n/d > three_sevenths)
-                                continue;
+                int32_t STEP = (n & 0x1) ? 1 : 2;
 
-                        if((double) n/d < two_sevenths)
+                for(int32_t d = (n * 7 / 3) - 1; d < MAX; d += STEP){
+
+                        double tmp = (double) n / (double) d;
+
+                        if(tmp > three_sevenths){
+                               continue;
+                        }
+
+                        if(tmp > left.fp){
+
+                                if(gcd(n, d) != 1){
+                                        continue;
+                                }
+
+                                left.n = n;
+                                left.d = d;
+                                left.fp = tmp;
+                        }
+
+                        if(tmp < three_sevenths){
                                 break;
-
-                        if(gcd(n, d) != 1)
-                                continue;
-
-//                        printf("%li/%li\n", n, d);
-                        count++;
+                        }
 
                 }
 
         }
 
-        printf("%li\n", count);
+        printf("%d/%d\n", left.n, left.d);
 
 
         return 0;
@@ -77,9 +82,9 @@ int main(int argc, char** argv)
 }
 
 /* Euler's Method to find the greatest common divisor */
-uint64_t gcd(uint64_t a, uint64_t b)
+int32_t gcd(int32_t a, int32_t b)
 {
-        uint64_t tmp;        
+        int32_t tmp;
 
         while(b){
                 tmp = a % b;
@@ -90,3 +95,4 @@ uint64_t gcd(uint64_t a, uint64_t b)
         return a;
 
 }
+

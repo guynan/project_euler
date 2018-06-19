@@ -77,7 +77,7 @@ uint64_t sum_squarefree_combinations(uint32_t nmax)
 
                         uint64_t k = binomial_coeff(n, r);
 
-                        if(squarefree(k, primes) && !inlist(list, k)){
+                        if(!inlist(list, k) && squarefree(k, primes)){
                                 list_add(list, k);
                         }
 
@@ -106,11 +106,6 @@ int squarefree(uint64_t n, List sqprimes)
                 if(n % contents[i] == 0){
                         return 0;
                 }
-                /*
-                if(contents[i] > n){
-                        return 0;
-                }
-                */
         }
 
         return 1;
@@ -163,9 +158,8 @@ uint64_t sum_list(List list)
         uint64_t sum = 0;
         uint64_t* arr = list->contents;
 
-        for(uint64_t i = 0; i < list->len; i++){
-                sum += arr[i];
-        }
+        for(uint64_t i = 0; i < list->len; sum += arr[i++])
+                ;
 
         return sum;
 

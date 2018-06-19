@@ -1,4 +1,4 @@
-[Badge](https://projecteuler.net/profile/guynan.png)
+![Badge](https://projecteuler.net/profile/guynan.png)
 
 # Project Euler
 
@@ -10,7 +10,7 @@ As I am trying to up my language skills; I prefer to write my own methods for th
 
 ## However;
 
-Since that was written, I have solved approximately 60 Project Euler problems in C.
+Since that was written, I have solved approximately 70 Project Euler problems in C.
 
 I have also started progress in learning Fortran, and thus these solutions live
-in `for_src`. 
+in `fortran`. 

@@ -1,3 +1,5 @@
+[Badge](https://projecteuler.net/profile/guynan.png)
+
 # Project Euler
 
 I am not doing these in order, just doing whatever takes my fancy. All of my solutions are written in C.

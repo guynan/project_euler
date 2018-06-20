@@ -1,52 +1,50 @@
-/* Finding the 10001st prime number 
+/* Finding the 10001st prime number
  *
  * Answer: 104743
  * Project Euler: 7 */
 
-/* Includes */
 #include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
 #include <math.h>
 
-/* Definitions */
-#define MAX 10001
 
-/* Prototypes */
-int isPrime(unsigned int s);
-int main();
+#define N_PRIME         10001
 
-int main()
+
+int main(int argc, char** argv);
+int is_prime(int32_t s);
+
+
+int main(int argc, char** argv)
 {
-        int primec = 0; int i = 0;
+        (void) argc;
+        (void) argv;
 
-        for( ; primec != MAX; i++){
+        int32_t i = 0;
 
-                if (isPrime(i)) primec++;
-        }
+        for(int32_t primec = 0; primec != N_PRIME; primec += is_prime(++i))
+                ;
 
-        printf("%d\n", i);
+        printf("%"PRId32"\n", i);
+
+        return 0;
 
 }
 
-
-/* Checks if an integer is a prime
- * in the most efficient way I know */
-int isPrime(unsigned int s)
+int is_prime(int32_t s)
 {
-        if (s < 1) return 0;
+        if (s <= 2 || s % 2 == 0)
+                return (s == 2);
 
-        if (s == 2) return 1;
+        int32_t top = (int32_t) round((float) sqrt(s));
 
-        /* Hopefully preventing rounding errors */
-        int top = (int) round(sqrt(s) +1 );
+        for(int32_t i = 3; i <= top; i+=2){
 
-        for(int i = 2; i < top+1; i++){
-
-                if(i == top) return 1;
-
-                if (s % i == 0) return 0;
-                        
+                if (s % i == 0)
+                        return 0;
         }
 
-        return 0;
+        return 1;
 }
 

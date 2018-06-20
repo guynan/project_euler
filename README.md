@@ -1,4 +1,4 @@
-![Badge](https://projecteuler.net/profile/guynan.png)
+![Badge](https://projecteuler.net/profile/guynan.png?)
 
 # Project Euler
 

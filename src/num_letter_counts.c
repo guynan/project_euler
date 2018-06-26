@@ -20,7 +20,6 @@ int32_t tens[] = { 0, 0, 6, 6, 5, 5, 5, 7, 6, 6};
 
 int main(int argc, char** argv);
 
-
 int main(int argc, char** argv)
 {
         (void) argc;
@@ -61,7 +60,6 @@ int main(int argc, char** argv)
 		}
 	}
 
-	/* just 1000 */
 	sum += ones[1] + THOUSAND;
 
 	printf("%"PRId32"\n", sum);

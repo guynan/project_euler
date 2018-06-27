@@ -177,23 +177,17 @@ contains
                 integer (int64) :: i, top
                 logical :: isprime
 
-                isprime = .false.  
-
-                if(s <= 1) then
-                        return
-                endif
+                isprime = .NOT. (s < 2 .OR. mod(s, 2) == 0);
 
                 top = int(sqrt(real(s)));
+                i = 3;
 
-                do i = 2, top , 1
-
-                        if(mod(s, i) == 0) then
-                                return;
-                        end if
-
+                do while(isprime .AND. i <= top)
+                        isprime = (mod(s, i) /= 0);
+                        i = i + 2;
                 end do
 
-                isprime = .true.
+                isprime = (isprime .OR. s == 2);
 
                 return
 

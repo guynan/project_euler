@@ -27,7 +27,7 @@ implicit none
 
         ! Immeadiate addition
         interface inc
-                module procedure inc_64, inc_128
+                module procedure inc_32, inc_64, inc_128
         end interface inc
 
         ! Immeadiate division
@@ -44,10 +44,29 @@ implicit none
                 module procedure intlen_64, intlen_128
         end interface intlen
 
+        interface isprime
+                module procedure isprime_32, isprime_64
+        end interface isprime
+
+        interface printint
+                module procedure printint_32, printint_64;
+        end interface printint
+
 contains
 
         ! This is here because I really miss the '+=' operator from C
         ! Operates on TWO instances of 64 bit numbers.
+
+        pure subroutine inc_32(base, offset)
+
+                integer (int32), intent(out) :: base;
+                integer (int32), intent(in) :: offset;
+
+                base = base + offset;
+                return
+
+        end subroutine inc_32
+
 
         pure subroutine inc_64(base, offset)
 
@@ -122,13 +141,19 @@ contains
         ! This subroutine is borne out of convenience for the native print
         ! method is usually overkill when one wishes to print an integer
 
-        subroutine printint(i)
+        subroutine printint_64(i)
                 
                 integer (int64), intent(in) :: i
                 write (*, '(I0)') i;
 
-        end subroutine printint
+        end subroutine printint_64
 
+        subroutine printint_32(i)
+                
+                integer (int32), intent(in) :: i
+                write (*, '(I0)') i;
+
+        end subroutine printint_32
 
         ! Reverses a 64-bit integer
 
@@ -171,27 +196,50 @@ contains
 
         ! Brute force approach to distinguishing primes
 
-        pure function isprime (s)
+        pure function isprime_64 (s)
 
                 integer (int64), intent(in) :: s
                 integer (int64) :: i, top
-                logical :: isprime
+                logical :: isprime_64
 
-                isprime = .NOT. (s < 2 .OR. mod(s, 2) == 0);
+                isprime_64 = .NOT. (s < 2 .OR. mod(s, 2) == 0);
 
                 top = int(sqrt(real(s)));
                 i = 3;
 
-                do while(isprime .AND. i <= top)
-                        isprime = (mod(s, i) /= 0);
+                do while(isprime_64 .AND. i <= top)
+                        isprime_64 = (mod(s, i) /= 0);
                         i = i + 2;
                 end do
 
-                isprime = (isprime .OR. s == 2);
+                isprime_64 = (isprime_64 .OR. s == 2);
 
                 return
 
-        end function isprime
+        end function isprime_64
+
+
+        pure function isprime_32 (s)
+
+                integer (int32), intent(in) :: s
+                integer (int32) :: i, top
+                logical :: isprime_32
+
+                isprime_32 = .NOT. (s < 2 .OR. mod(s, 2) == 0);
+
+                top = int(sqrt(real(s)));
+                i = 3;
+
+                do while(isprime_32 .AND. i <= top)
+                        isprime_32 = (mod(s, i) /= 0);
+                        i = i + 2;
+                end do
+
+                isprime_32 = (isprime_32 .OR. s == 2);
+
+                return
+
+        end function isprime_32
 
 
         ! Uses Euler's method for calculating the greatest common divisor

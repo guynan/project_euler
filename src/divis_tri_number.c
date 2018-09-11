@@ -9,13 +9,12 @@
 #include <inttypes.h>
 
 
-#define MAX 500
-#define MAXLEN 50000
+#define MAX     500
 
 
-uint64_t maxTriDivis(uint64_t max);
+int32_t max_tri_divis(int32_t max);
 int main(int argc, char** argv);
-uint64_t numdivis(uint64_t f);
+int32_t numdivis(int32_t f);
 
 
 int main(int argc, char** argv)
@@ -23,32 +22,28 @@ int main(int argc, char** argv)
         (void) argc;
         (void) argv;
 
-        printf("%"PRIu64"\n", maxTriDivis(MAX));
+        printf("%"PRId32"\n", max_tri_divis(MAX));
 
         return 0;
 }
 
-uint64_t maxTriDivis(uint64_t max)
+int32_t max_tri_divis(int32_t max)
 {
-        uint64_t tri = 3;
+        int32_t tri = 3;
 
-        for(uint64_t i = 3; ; tri += i++){
-                
-                if (numdivis(tri) > max)
-                        break;
-        }
+        for(int32_t i = 3; numdivis(tri) <= max; tri += i++)
+                ;
 
         return tri;
 }
 
-uint64_t numdivis(uint64_t f)
+int32_t numdivis(int32_t f)
 {
-        uint64_t count = 1;
+        int32_t count = 1;
 
-        for(uint64_t i = 1; i*i < f; count += (f % i++ == 0))
+        for(int32_t i = 1; i*i < f; count += (f % i++ == 0))
                 ;
 
         return 2 * count;
-
 }
 

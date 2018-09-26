@@ -6,11 +6,11 @@
  * multiplicand, multiplier, and product is 1 through 9 pandigital.
  *
  * Find the sum of all products whose multiplicand/multiplier/product identity
- * can be written as a 1 through 9 pandigital. 
+ * can be written as a 1 through 9 pandigital.
  *
  * Project Euler 32
  *
- * Answer: 45228 
+ * Answer: 45228
  *
  * As a joke to myself I am writing this to be C89 compliant */
 
@@ -28,7 +28,7 @@
 uint32_t concat_ints(uint32_t* ints);
 int in(uint32_t i, uint32_t* arr);
 int main(int argc, char** argv);
-int isPandigital(uint32_t i);
+int is_pandigit(uint32_t i);
 uint32_t productSum(void);
 
 
@@ -45,38 +45,21 @@ int main(int argc, char** argv)
 }
 
 
-int isPandigital(uint32_t i)
+int is_pandigit(uint32_t i)
 {
-        uint32_t* pan = NULL;
-
-        pan = calloc(BASE, sizeof(uint32_t));
+        uint32_t set_ints = 0x0;
+        uint32_t fault_bit = 0x2000;
+        uint32_t bit_mask = 0x0;
 
         for( ; i; i /= BASE){
-                (pan[i % BASE])++;
+                bit_mask = 0x1;
+                bit_mask <<= i % BASE;
+                set_ints |= (set_ints & bit_mask) ? fault_bit : bit_mask;
         }
 
-        /* At this point, for a number to be pandigital, all numbers in this
-         * array must be set to 1. We know we get zeroed memory too. `i` is now
-         * zero which is useful so we don't need to introduce another var */
-
-        for(i = 1 ; i < 10; i++){
-
-                if(pan[i] != 1){
-                        i = 0;
-                        goto out;
-                }
-        }
-
-        i = 1;
-        
-out:
-
-        free(pan);
-
-        return i;
+        return set_ints == 0x3FE;
 
 }
-
 
 uint32_t productSum(void)
 {
@@ -100,14 +83,14 @@ uint32_t productSum(void)
                         product = i * j;
 
                         if(product > MAX_PANDIGIT){
-                                continue; 
+                                continue;
                         }
 
                         uint32_t tmp[4] = {i, j, product, 0};
 
                         concat = concat_ints(tmp);
 
-                        if(isPandigital(concat)){
+                        if(is_pandigit(concat)){
 
                                 if(!in(product, productList)) {
                                         productList[index++] = product;
@@ -145,7 +128,6 @@ uint32_t concat_ints(uint32_t* ints)
 
 }
 
-                
 /* Need to search the whole array as the list is unsorted */
 int in(uint32_t i, uint32_t* arr)
 {
@@ -156,7 +138,7 @@ int in(uint32_t i, uint32_t* arr)
                         return 1;
                 }
          }
- 
+
         return 0;
 }
 

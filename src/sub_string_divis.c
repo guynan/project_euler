@@ -14,7 +14,7 @@
  * d8d9d10=289 is divisible by 17
  * Find the sum of all 0 to 9 pandigital numbers with this property.
  *
- * Project Euler: 43 
+ * Project Euler: 43
  *
  * Answer: 16695334890 */
 
@@ -27,18 +27,13 @@
 
 #define START           1023456789
 #define MAX             4999999999
-#define PANLEN          16
 #define BASE            10
 
 
-static uint8_t PAND8_T[] = {9, 8, 7, 6, 5, 4, 3, 2, 1};
 static const int PRIMES[] = {17, 13, 11, 7, 5, 3, 2};
 
-
-uint8_t shortcmp(uint8_t *a, uint8_t *b);
-int dcomp(const void* a, const void* b);
-uint8_t isPandigital(uint64_t i);
-int isSubStringDivis(uint64_t n);
+int is_pandigit(uint64_t i);
+int substring_divis(uint64_t n);
 int main(int argc, char** argv);
 
 
@@ -46,85 +41,67 @@ int main(int argc, char** argv)
 {
         (void) argc;
         (void) argv;
- 
+
         /* A couple of things that speed up our computation:
          *
-         *      All pandigital numbers (0-9) are divisible by 9 so we can 
-         *      increment by 9 to reduce our search space. We start with the 
-         *      first known pandigital number, so we know each subsequently 
+         *      All pandigital numbers (0-9) are divisible by 9 so we can
+         *      increment by 9 to reduce our search space. We start with the
+         *      first known pandigital number, so we know each subsequently
          *      generated number is far more likely to be one too.
          *
          *      I have found that it is also considerably more computationally
          *      efficient to first check if the number is substring divisible
          *      before checking whether it is a pandigit. This is because all
          *      numbers --irrespective of their unsuitability-- must be checked
-         *      and my algorithm for checking if it is pandigital relies on 
-         *      sorting the number first even before any suitability checking 
+         *      and my algorithm for checking if it is pandigital relies on
+         *      sorting the number first even before any suitability checking
          *      can commence. This means that it takes O(n log n) time. */
 
         uint64_t sum = 0;
 
         for(uint64_t i = START; i < MAX; i+= 9){
-                if(isSubStringDivis(i) && isPandigital(i)) sum += i;
+                sum += (substring_divis(i) && is_pandigit(i)) ? i : 0;
         }
 
         printf("%"PRIu64"\n", sum);
 
-        return 0; 
+        return 0;
 
 }
 
 
-uint8_t shortcmp(uint8_t *a, uint8_t *b)
+int is_pandigit(uint64_t i)
 {
-        uint8_t i = 0;
+        uint32_t set_ints = 0x0;
+        uint32_t bit_mask = 0x0;
 
-        for( ; a[i]; i++){
-                if(a[i] != b[i]) return 0;
+        for( ; i; i /= BASE){
+                bit_mask = 0x1;
+                bit_mask <<= i % BASE;
+                set_ints ^= bit_mask;
+
+                if(set_ints & bit_mask == 0){
+                        return 0;
+                }
         }
 
-        return (b[i] == '\0');
-}
-
-
-uint8_t isPandigital(uint64_t i)
-{
-        uint8_t* digit = calloc(PANLEN, sizeof(uint8_t));
-
-        for(uint8_t j = 0; i > 0; j++){
-                digit[j] = i % BASE;
-                i /= BASE;
-        }
-
-        qsort(digit, PANLEN, sizeof(uint8_t), dcomp);
-
-        uint8_t res = shortcmp(digit, PAND8_T);
-
-        free(digit);
-
-        return res;
+        return set_ints == 0x3FF;
 
 }
 
-
-int dcomp(const void* a, const void* b)
+int substring_divis(uint64_t n)
 {
-        return (*((uint8_t*) a) < *((uint8_t*) b));
-}
-
-
-int isSubStringDivis(uint64_t n)
-{
-        static uint16_t tmp;
+        uint16_t tmp;
 
         for(uint8_t i = 0; n > 1000; ){
 
                 tmp = (n % 1000);
 
-                if(tmp % PRIMES[i++] != 0) return 0;
+                if(tmp % PRIMES[i++]){
+                        return 0;
+                }
 
                 n /= 10;
-                
         }
 
         return 1;

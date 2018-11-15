@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <inttypes.h>
-#include <math.h>
 
 
 #define N_PRIME         10001
@@ -21,9 +20,9 @@ int main(int argc, char** argv)
         (void) argc;
         (void) argv;
 
-        int32_t i = 0;
+        int32_t i = 1;
 
-        for(int32_t primec = 0; primec != N_PRIME; primec += is_prime(++i))
+        for(int32_t pc = N_PRIME - 1; pc; pc -= ((i += 2), (!!is_prime(i))))
                 ;
 
         printf("%"PRId32"\n", i);
@@ -34,17 +33,11 @@ int main(int argc, char** argv)
 
 int is_prime(int32_t s)
 {
-        if (s <= 2 || s % 2 == 0)
-                return (s == 2);
+        int32_t res = !(s <= 2 || (s & 0x1) != 1);
 
-        int32_t top = (int32_t) round((float) sqrt(s));
+        for(int32_t i = 3; res && i * i <= s; i += ((res = !(s % i == 0)), 2))
+                ;
 
-        for(int32_t i = 3; i <= top; i+=2){
-
-                if (s % i == 0)
-                        return 0;
-        }
-
-        return 1;
+        return (res || s == 2);
 }
 

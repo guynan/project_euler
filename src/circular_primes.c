@@ -29,7 +29,7 @@ int main(int argc, char** argv);
 uint32_t circulate(uint32_t i);
 int possibly_circular(uint32_t i);
 int circular_prime(uint32_t i);
-int isPrime(uint32_t s);
+int is_prime(uint32_t s);
 
 
 int main(int argc, char** argv)
@@ -37,10 +37,8 @@ int main(int argc, char** argv)
         /* Count is 1 so we capture 2 */
         uint32_t c = 1;
 
-        for(uint32_t i = 3; i < MAX; i+= 2){
-
-                if(circular_prime(i))
-                        c++;
+        for(uint32_t i = 3; i < MAX; i += 2){
+                c += circular_prime(i);
         }
 
         printf("%"PRIu32"\n", c);
@@ -50,46 +48,34 @@ int main(int argc, char** argv)
 }
 
 
-/* Checks if an integer is a prime
- * in the most efficient way I know */
-int isPrime(uint32_t s)
+/* Primality by trial division */
+int is_prime(uint32_t s)
 {
-        if (s < 2 || s == 2 || s % 2 == 0)
-                return (s == 2);
+        uint32_t res = !(s <= 2 || (s & 0x1) != 1);
 
-        uint32_t top = (uint32_t) round((float) sqrt(s));
+        for(uint32_t i = 3; res && i * i <= s; i += ((res = !(s % i == 0)), 2))
+                ;
 
-        for(uint32_t i = 3; i <= top; i+=2){
-
-                if (s % i == 0)
-                        return 0;
-        }
-
-        return 1;
+        return (res || s == 2);
 }
 
 
 int circular_prime(uint32_t i)
 {
-        if(!possibly_circular(i) || !isPrime(i))
+        if(!possibly_circular(i) || !is_prime(i))
                 return 0;
 
-        uint32_t rotated = i;
+        uint32_t rotated = circulate(i);
 
-        while(1){
+        for( ; i != rotated; rotated = circulate(rotated)){
 
-                rotated = circulate(rotated);
-                if(!isPrime(rotated))
-                        return 0;
-
-                if(i == rotated)
-                        return 1;
+                if(!is_prime(rotated))
+                        break;
         }
 
-        return 1;
+        return (i == rotated);
 
 }
-
 
 uint32_t circulate(uint32_t i)
 {
@@ -103,18 +89,13 @@ uint32_t circulate(uint32_t i)
 }
 
 
+/* A number may not be circular if it contains any even digits */
 int possibly_circular(uint32_t i)
 {
-        while(i){
+        for( ; (i % BASE) % 2; i /= BASE)
+                ;
 
-                if((i % BASE) % 2 == 0)
-                        return 0;
-
-                i /= BASE;
-
-        }
-
-        return 1;
+        return !i;
 
 }
 

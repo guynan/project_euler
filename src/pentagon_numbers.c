@@ -17,8 +17,8 @@
 
 
 int main(int argc, char** argv);
-int isPentagonal(uint32_t x);
 int perfect_square(uint32_t n);
+int pentagonal(uint32_t x);
 
 
 int main(int argc, char** argv)
@@ -27,32 +27,30 @@ int main(int argc, char** argv)
         (void) argv;
 
         uint32_t pb, pa;
+        uint32_t res = 0;
 
-        for(uint32_t a = 5; ; a++){
+        for(uint32_t a = 5; !res; a += 2){
+
                 pa = PENT(a);
 
-                for(uint32_t b = 5; b < a; b++){
-                        pb = PENT(b);
+                for(uint32_t b = a / 5; !res && (b < a); b++){
 
-                        if(isPentagonal(pa-pb) && isPentagonal(pa+pb)){
-                                goto done;
-                        }
+                        pb = PENT(b);
+                        res = (pentagonal(pa-pb) && pentagonal(pa+pb));
                 }
 
         }
 
-done:
         printf("%"PRIu32"\n", pa-pb);
 
         return 0;
 
 }
 
-
-
-/* Asks if is pentagonal by
- * iterating over the pentagon array */
-int isPentagonal(uint32_t x)
+/* Checking if a number is pentagonal by the numerical method of the product of
+ * the number and 24 plus one is both a perfect square and upon division by 6,
+ * the number has a remainder of 5 */
+int pentagonal(uint32_t x)
 {
         uint32_t tmp = 24 * x + 1;
 
@@ -61,11 +59,11 @@ int isPentagonal(uint32_t x)
 }
 
 
+/* A dirty floating point way of checking whether a number is composed of
+ * the product of two identical integers */
 int perfect_square(uint32_t n)
 {
         uint32_t tmp = (uint32_t) sqrt((double) n);
         return ((tmp * tmp) == n);
 }
-
-
 

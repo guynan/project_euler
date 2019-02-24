@@ -32,6 +32,7 @@
 
 static const int PRIMES[] = {17, 13, 11, 7, 5, 3, 2};
 
+
 int is_pandigit(uint64_t i);
 int substring_divis(uint64_t n);
 int main(int argc, char** argv);
@@ -59,8 +60,8 @@ int main(int argc, char** argv)
 
         uint64_t sum = 0;
 
-        for(uint64_t i = START; i < MAX; i+= 9){
-                sum += (substring_divis(i) && is_pandigit(i)) ? i : 0;
+        for(uint64_t i = START; i < MAX; i += 9){
+                sum += i * (substring_divis(i) && is_pandigit(i));
         }
 
         printf("%"PRIu64"\n", sum);
@@ -70,38 +71,36 @@ int main(int argc, char** argv)
 }
 
 
+/* Testing the pandigital nature of numbers by identifying the digit that is
+ * removed from the number and using that to set bits in an integer that tracks
+ * which digits have been selected. I am hellishly proud of this method. It is
+ * very efficient and uses very little memory */
 int is_pandigit(uint64_t i)
 {
-        uint32_t set_ints = 0x0;
         uint32_t bit_mask = 0x0;
 
-        for( ; i; i /= BASE){
+        for(uint32_t set_ints = 0x0; i; i /= BASE){
                 bit_mask = 0x1;
                 bit_mask <<= i % BASE;
                 set_ints ^= bit_mask;
 
-                if(set_ints & bit_mask == 0){
+                if(!(set_ints & bit_mask)){
                         return 0;
                 }
         }
 
-        return set_ints == 0x3FF;
+        return 1;
 
 }
 
+
 int substring_divis(uint64_t n)
 {
-        uint16_t tmp;
+        for(uint8_t i = 0; n > 1000; n /= BASE){
 
-        for(uint8_t i = 0; n > 1000; ){
-
-                tmp = (n % 1000);
-
-                if(tmp % PRIMES[i++]){
+                if((n % 1000) % PRIMES[i++]){
                         return 0;
                 }
-
-                n /= 10;
         }
 
         return 1;

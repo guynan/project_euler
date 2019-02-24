@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 
 int evenly_divisible(uint32_t a, uint32_t max_divis)
 {
-        for(int i = 2; i <= max_divis; i++){
+        for(int i = max_divis; i > 2; i--){
 
                 if (a % i != 0){
                         return 0;

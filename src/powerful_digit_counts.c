@@ -30,18 +30,16 @@ int main(int argc, char** argv)
         uint64_t count = 0;
 
         for(uint64_t base = 0; base < 10; base++){
-                for(uint64_t exp = 0;  ; exp++){
 
-                        uint64_t len = intlen(intpow(base, exp));
+                uint64_t len;
+
+                for(uint64_t exp = 0; ; count += (len == exp++)){
+
+                        len = intlen(intpow(base, exp));
 
                         if(exp > len){
                                 break;
                         }
-
-                        if(len == exp){
-                                count++;
-                        }
-
 
                 }
         }
@@ -50,25 +48,20 @@ int main(int argc, char** argv)
 
 }
 
+
 uint64_t intlen(uint64_t i)
 {
         uint64_t len;
 
-        for(len = 1; ; i /= 10){
-                if(i < 10)
-                        break;
-                len++;
-        }
+        for(len = 1; i >= 10; len += ((i /= 10), 1))
+                ;
 
         return len;
 }
 
+
 uint64_t intpow(uint64_t base, uint64_t exp)
 {
-        if(exp <= 1){
-                return (exp == 1) ? exp : 1;
-        }
-
         uint64_t res;
 
         for(res = 1; exp; exp--){
@@ -76,6 +69,5 @@ uint64_t intpow(uint64_t base, uint64_t exp)
         }
 
         return res;
-
 }
 

@@ -37,10 +37,11 @@ int main(int argc, char** argv)
          *
          * X**2 + Y**2 = r**2 */
 
-        const double total_area = (1.0 / 4.0) - (M_PI_4 / 4.0);
-
-        double curr_area, x;
         int32_t n;
+        double curr_area, x;
+        int32_t step = COARSE_STEP;
+        double (*area_func) (double x) = null_area;
+        const double total_area = (1.0 / 4.0) - (M_PI_4 / 4.0);
 
         /* Here we do a coarse search for something that first satisfies the
          * area constraint. Since we have skipped over so many values, we then
@@ -48,28 +49,25 @@ int main(int argc, char** argv)
          * but this time *also* with a calculation that is far more precise so
          * that we can find the exact solution */
 
-        for(n = 1; ; n += COARSE_STEP){
+        for(n = 1; ; n += step){
 
                 x = solve_intersect(n);
-                curr_area = solve_area(x, n, null_area);
+                curr_area = solve_area(x, n, area_func);
 
                 if((curr_area / total_area) < END_RATIO){
 
-                        for(n -= (COARSE_STEP + 1); ; n += 1){
-
-                                x = solve_intersect(n);
-                                curr_area = solve_area(x, n, area_defect);
-
-                                if((curr_area / total_area) < END_RATIO){
-                                        goto out;
-                                }
+                        /* This means that this is the second time visiting */
+                        if(area_func == area_defect){
+                                break;
                         }
+
+                        area_func = area_defect;
+                        n -= (COARSE_STEP + 2);
+                        step = 1;
 
                 }
 
         }
-
-out:
 
         printf("%"PRId32"\n", n);
 

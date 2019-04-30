@@ -1,38 +1,32 @@
 /* The first two consecutive numbers to have two distinct prime factors are:
  *
- * 14 = 2 × 7
- * 15 = 3 × 5
+ * 14 = 2 Ã— 7
+ * 15 = 3 Ã— 5
  *
  * The first three consecutive numbers to have three distinct prime factors
  * are:
  *
- * 644 = 2² × 7 × 23
- * 645 = 3 × 5 × 43
- * 646 = 2 × 17 × 19.
+ * 644 = 2Â² Ã— 7 Ã— 23
+ * 645 = 3 Ã— 5 Ã— 43
+ * 646 = 2 Ã— 17 Ã— 19.
  *
  * Find the first four consecutive integers to have four distinct prime factors
  * each. What is the first of these numbers?
  *
  * Project Euler: 47
  *
- * Answer: */
-
+ * Answer: 134043 */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <stdint.h>
 #include <inttypes.h>
 
 
-#define N_FACTORS               4
-#define MAX                     100000
-#define FACTOR_ARR_N            48
+#define N_FACTORS       4
 
 
-uint32_t facnum(uint32_t n, uint32_t* factors);
+uint32_t count_factors(uint32_t n);
 uint32_t consecfactors(uint32_t n);
-uint32_t countFactors(uint32_t* f);
 int main(int argc, char** argv);
 
 
@@ -48,77 +42,51 @@ int main(int argc, char** argv)
 }
 
 
-uint32_t facnum(uint32_t n, uint32_t* factors)
-{
-        uint32_t z = 2;
-
-        memset(factors, 0, (FACTOR_ARR_N * sizeof(uint32_t)));
-
-        uint32_t i = 0;
-
-        while(z * z <= n){
-
-                if(n % z == 0){
-                        factors[i++] = z;  
-                        n /= z;
-                }
-
-                else z++;
-
-        }
-
-        if(n > 1){
-                factors[i] = n;  
-        }
-
-        return countFactors(factors);
-
-}
-
-
-uint32_t countFactors(uint32_t* f)
-{
-
-        uint32_t last = 0;
-        uint32_t count = 0;
-
-        while(*f){
-                if(*f != last) count++;
-                last = *f++;
-        }
-
-        return count;
-
-}
-
-
+/* This code starts by picking a number and then adding to it to see if the
+ * number of factors is equal to the number that we are looking for. If so, it
+ * checks the next consecutive number to see if it too has the same property.
+ * If in any event that it does not, but has passed the zero threshold, we can
+ * add the number that did pass the constraint and move one past that for we
+ * know that those integers have been check and will not contribute to a
+ * successful solution. */
 uint32_t consecfactors(uint32_t n)
 {
-        uint32_t* f = malloc(FACTOR_ARR_N * sizeof(uint32_t));
 
-        uint32_t consec = 0;
+        uint32_t i = 1;
 
-        for(uint32_t i = 100; consec != n; i++){
+        for(uint32_t c = 0; c != n; ){
 
-                consec = 0;
+                i += c + 1;
 
-                for(uint32_t j = 0; j < n; j++){
-
-                        uint32_t factors = facnum(i + j, f);
-
-                        if(factors != n) break;
-
-                        consec++;        
-                }
-
-                if(consec == n){
-                        free(f);
-                        return i;
-                }
-
+                for(c = 0 ; count_factors(i + c) == n && c < n; c++)
+                        ;
         }
 
-        return 0;
+        return i;
+
+}
+
+
+/* We remove all factors of two so that we can iterate via two, by only
+ * checking the odd numbers henceforth. We also divide by the number which is a
+ * factor such that we arrive at our upper limit sooner. If `n` is equal to
+ * one, then this means that we successfully got all the prime factors. If not,
+ * then it must in fact be a prime, and thus we must add this for we don't
+ * iterate up to the original number itself */
+uint32_t count_factors(uint32_t n)
+{
+        uint32_t count = 0;
+
+        for(count += !(n & 0x1); !(n & 0x1); n >>= 1)
+                ;
+
+        for(uint32_t z = 3; (z * z) < n; z += 2){
+
+                for(count += (n % z == 0); n % z == 0; n /= z)
+                        ;
+        }
+
+        return (n > 1) + count;
 
 }
 

@@ -14,13 +14,12 @@
  * What is the largest 1 to 9 pandigital 9-digit number that can be formed as
  * the concatenated product of an integer with (1,2, ... , n) where n > 1?
  *
- * Project Euler: 38 
+ * Project Euler: 38
  *
  * Answer: 932718654 */
 
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include <inttypes.h>
 
@@ -30,11 +29,10 @@
 #define BASE            10
 
 
-uint32_t largestPandigitalProduct(uint32_t max);
-uint32_t concatMultiples(uint32_t i);
-uint32_t concat(uint32_t* ints);
+uint32_t pandigital_multiple(uint32_t i);
+uint32_t concat(uint32_t a, uint32_t b);
 int main(int argc, char** argv);
-int isPandigital(uint32_t i);
+int is_pandigital(uint32_t i);
 uint32_t pow10_g(uint32_t x);
 uint32_t intlen(uint32_t x);
 
@@ -44,10 +42,60 @@ int main(int argc, char** argv)
         (void) argc;
         (void) argv;
 
-        printf("%"PRIu32"\n", largestPandigitalProduct(MAX));
+        uint32_t largest = 0;
+
+        for(uint32_t i = 2; i < MAX; i++){
+                uint32_t k = pandigital_multiple(i);
+                largest = (k > largest) ? k : largest;
+        }
+
+        printf("%"PRIu32"\n", largest);
 
         return 0;
 
+}
+
+
+/* In the event that a pandigital multiple can be made, this function shall
+ * return that number, else it will return 0 */
+uint32_t pandigital_multiple(uint32_t i)
+{
+        uint32_t cat = i;
+        uint32_t length = 0;
+
+        for(uint32_t j = 2; length < MAX_DIGIT_LEN; j++){
+
+                cat = concat(cat, j * i);
+                length = intlen(cat);
+        }
+
+        return is_pandigital(cat) ? cat : 0;
+
+}
+
+
+/* My little bit shift magic for testing pandigital numbers. */
+int is_pandigital(uint32_t i)
+{
+        uint32_t set_ints = 0x0;
+        uint32_t fault_bit = 0x2000;
+        uint32_t bit_mask = 0x0;
+
+        for( ; i; i /= BASE){
+                bit_mask = 0x1;
+                bit_mask <<= i % BASE;
+                set_ints |= (set_ints & bit_mask) ? fault_bit : bit_mask;
+        }
+
+        return set_ints == 0x3FE;
+
+}
+
+
+uint32_t concat(uint32_t a, uint32_t b)
+{
+        a *= pow10_g(intlen(b));
+        return a + b;
 }
 
 
@@ -55,10 +103,10 @@ uint32_t pow10_g(uint32_t x)
 {
         uint32_t ret = 10;
 
-        for(int i = 1; i < x; i++){
+        for(uint32_t i = 1; i < x; i++){
                 ret *= 10;
         }
-        
+
         return ret;
 
 }
@@ -67,103 +115,10 @@ uint32_t pow10_g(uint32_t x)
 uint32_t intlen(uint32_t x)
 {
         uint32_t len = 0;
-        while(x){
-                x /= BASE;
+        for( ; x; x /= BASE){
                 len++;
         }
 
         return len;
-
-}
-
-
-uint32_t concat(uint32_t* ints)
-{
-        int concat = *ints++;
-
-        while(*ints){
-                concat *= pow10_g(intlen(*ints));
-                concat += *ints++;
-        }
-
-        return concat;
-
-}
-
-
-uint32_t largestPandigitalProduct(const uint32_t max)
-{
-        uint32_t largest = 0;
-
-        for(uint32_t i = 1; i < max; i++){
-                uint32_t k = concatMultiples(i);
-                largest = (k > largest) ? k : largest;
-        }
-
-        return largest;
-
-}
-
-
-uint32_t concatMultiples(uint32_t i)
-{
-        uint32_t cat = i;
-
-        for(uint32_t j = 2; ; j++){
-
-                uint32_t ints[2] = {cat, j * i};
-                cat = concat(ints);
-
-                uint32_t length = intlen(cat);
-
-                if(length > MAX_DIGIT_LEN){
-                        cat = 0;
-                        goto out;
-                }
-                
-                if(length == MAX_DIGIT_LEN && isPandigital(cat)){
-                        goto out;
-                }
-
-        }
-
-out:
-
-        return cat;
-
-
-}
-
-
-int isPandigital(uint32_t i)
-{
-        uint32_t* pan = NULL;
-
-        pan = calloc(BASE, sizeof(uint32_t));
-
-        for( ; i; i /= BASE){
-                (pan[i % BASE])++;
-        }
-
-
-        /* At this point, for a number to be pandigital, all numbers in this
-         * array must be set to 1. We know we get zeroed memory too. `i` is now
-         * zero which is useful so we don't need to introduce another var */
-        for(i = 1 ; i < 10; i++){
-
-                if(pan[i] != 1){
-                        i = 0;
-                        goto out;
-                }
-        }
-
-        i = 1;
-        
-out:
-
-        free(pan);
-
-        return i;
-
 }
 

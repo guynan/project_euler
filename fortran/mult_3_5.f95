@@ -29,7 +29,7 @@ implicit none
         top = 1000
         sumx = 0
 
-        do i = 1, TOP, 1
+        do i = 1, TOP - 1, 1
                 if (mult_3_5(i)) then
                         sumx = sumx + i
                 end if

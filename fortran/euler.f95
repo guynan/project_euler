@@ -44,6 +44,10 @@ implicit none
                 module procedure intlen_64, intlen_128
         end interface intlen
 
+        interface intrev
+                module procedure intrev64, intrev32
+        end interface intrev
+
         interface isprime
                 module procedure isprime_32, isprime_64
         end interface isprime
@@ -51,6 +55,19 @@ implicit none
         interface printint
                 module procedure printint_32, printint_64;
         end interface printint
+
+
+        interface
+		!standard C library qsort
+                subroutine qsort(array,elem_count,elem_size,compare) bind(C,name="qsort")
+                        import
+                        type(c_ptr),value :: array
+                        integer(c_size_t),value :: elem_count
+                        integer(c_size_t),value :: elem_size
+                        type(c_funptr), value :: compare
+                        !int(*compare)(const void *, const void *)
+                end subroutine qsort
+        end interface
 
 contains
 
@@ -142,14 +159,14 @@ contains
         ! method is usually overkill when one wishes to print an integer
 
         subroutine printint_64(i)
-                
+ 
                 integer (int64), intent(in) :: i
                 write (*, '(I0)') i;
 
         end subroutine printint_64
 
         subroutine printint_32(i)
-                
+
                 integer (int32), intent(in) :: i
                 write (*, '(I0)') i;
 
@@ -157,25 +174,46 @@ contains
 
         ! Reverses a 64-bit integer
 
-        pure function intrev(x)
+        pure function intrev64(x)
 
                 integer (int64), intent(in) :: x
-                integer (int64) :: intrev
+                integer (int64) :: intrev64
                 integer (int64) :: tmp
-                
-                intrev  = 0
+
+                intrev64  = 0
                 tmp = x;
 
                 do while (tmp /= 0)
-                        intrev = intrev * 10
-                        call inc(intrev, mod(tmp, 10));
+                        intrev64 = intrev64 * 10
+                        call inc(intrev64, mod(tmp, 10));
                         tmp = tmp / 10
                 enddo
 
                 return
 
-        end function intrev
+        end function intrev64
 
+
+        ! Reverse a 32-bit integer
+
+        pure function intrev32(x)
+
+                integer (int32), intent(in) :: x
+                integer (int32) :: intrev32
+                integer (int32) :: tmp
+
+                intrev32  = 0
+                tmp = x;
+
+                do while (tmp /= 0)
+                        intrev32 = intrev32 * 10
+                        call inc(intrev32, mod(tmp, 10));
+                        tmp = tmp / 10
+                enddo
+
+                return
+
+        end function intrev32
 
         ! Tests if a number is a Palindrome through an integer
         ! Reversal process. Operates on 64-bits

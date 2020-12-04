@@ -17,7 +17,7 @@ OUT=euler.o
 
 all: $(OUT)
 
-euler.o:
+euler.o: euler.f95
 	$(CC) -c $(SRC) $(FLAGS) $(OPT_LEVEL) -o $(OUT)
 
 10001st_prime: $(OUT)
